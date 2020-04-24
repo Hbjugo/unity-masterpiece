@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using TMPro;
 
 
@@ -9,6 +10,7 @@ using TMPro;
  * If so, it informs the event handler, else it doesn't do anything
  **/
 public class ClickableText : MonoBehaviour, IPointerClickHandler {
+	[SerializeField] Scrollbar scrollBar;
 	EventHandler eh;
 
 	private void Start() {
@@ -21,12 +23,14 @@ public class ClickableText : MonoBehaviour, IPointerClickHandler {
 		if (eventData.button == PointerEventData.InputButton.Left) {
 			// Try to find the eventual link of the text clicked
 			int linkIndex = TMP_TextUtilities.FindIntersectingLink(text, Input.mousePosition, Camera.main);
+			Debug.Log(linkIndex);
 			// If it is equal to -1, it was not found
 			if (linkIndex > -1) {
 				TMP_LinkInfo linkInfo = text.textInfo.linkInfo[linkIndex];
 				string currChoice = linkInfo.GetLinkID();
 				// informs the event handler of the new event
 				eh.ChangeEvent(currChoice);
+				scrollBar.value = 1;
 			}
 		}
 	}

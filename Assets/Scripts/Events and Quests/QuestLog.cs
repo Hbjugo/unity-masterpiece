@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using TMPro;
 
 /**
  * Represents the quest log
@@ -12,6 +14,7 @@ using UnityEngine.Tilemaps;
  **/
 public class QuestLog : MonoBehaviour {
 	List<Quest> log; // TODO eventually add a way to limit the number of quests in the log
+	QuestTexts texts;
 
 	const int NB_TRIV_QUESTS = 1;
 
@@ -42,6 +45,7 @@ public class QuestLog : MonoBehaviour {
 
 		log = new List<Quest>();
 		trivGiven = new Dictionary<Place, Quest>();
+		texts = new QuestTexts();
 	}
 
 
@@ -105,7 +109,7 @@ public class QuestLog : MonoBehaviour {
 			pendingQuestID = Random.Range(1, NB_TRIV_QUESTS + 1).ToString("D4");
 			return pendingQuestID;
 		}
-
+		
 		Quest currTriv;
 		trivGiven.TryGetValue(events.GetPlace(), out currTriv);
 		pendingQuestID = currTriv.GetID();
@@ -168,10 +172,20 @@ public class QuestLog : MonoBehaviour {
 		MonsterPlace obj = Instantiate(monsters) as MonsterPlace;
 		obj.transform.position = map.CellToWorld(coords);
 
-		Quest quest = new Quest(pendingQuestID, events.GetPlace(), obj);
+		Quest quest = new Quest(pendingQuestID, texts.GetText(pendingQuestID), events.GetPlace(), obj);
 		log.Add(quest);
 		trivGiven.Add(events.GetPlace(), quest);
 		return "Good";
+	}
+
+
+	public string LogToString() {
+		StringBuilder sb = new StringBuilder();
+		sb.Append("Current quests : \n\n\n");
+		foreach (Quest q in log)
+			sb.Append(texts.GetText(q.GetID()) + "\n\n");
+
+		return sb.ToString();
 	}
 
 
@@ -201,6 +215,23 @@ public class QuestLog : MonoBehaviour {
 		if (questID[0] == '0')
 			trivGiven.Remove(events.GetPlace());
 		return "Good";
+	}
+
+	private class QuestTexts {
+		Dictionary<string, string> texts;
+
+		public QuestTexts() {
+			texts = new Dictionary<string, string>();
+
+			texts.Add("0001", "The adventurers' Guild has asked you to slay a couple of monsters. They are in a forest, not far from the city where you where given this task.");
+		}
+
+		public string GetText(string name) {
+			string text = "";
+			if (!texts.TryGetValue(name, out text))
+				Debug.LogError("text not found for " + name);
+			return text;
+		}
 	}
 	
 }

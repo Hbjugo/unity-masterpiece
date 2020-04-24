@@ -19,8 +19,11 @@ public class Quest {
 	Quest[] subObjs; // TODO add a way to have sub-objectives
 	bool isAccomplished;
 
-	public Quest(string ID, Place receiverPlace, params Place[] objectivesPlaces) {
+	string description;
+
+	public Quest(string ID, string description, Place receiverPlace, params Place[] objectivesPlaces) {
 		this.ID = ID;
+		this.description = description;
 		// announce to its receiver's place it should be able to handle this quest
 		receiverPlace.AddQuestReceiver(this);
 
