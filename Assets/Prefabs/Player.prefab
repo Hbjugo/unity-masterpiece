@@ -95,8 +95,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   invalidTiles:
   - {fileID: 11400000, guid: 43133f7c359c07147be08d99a15b5797, type: 2}
-  movementRad: 1
-  damage: 3
+  damage: 1
 --- !u!114 &5877118901251246427
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -109,4 +108,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcf6c607bcd0196479bada5abb08f248, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startingHp: 10

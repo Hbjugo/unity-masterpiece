@@ -23,7 +23,6 @@ public class ClickableText : MonoBehaviour, IPointerClickHandler {
 		if (eventData.button == PointerEventData.InputButton.Left) {
 			// Try to find the eventual link of the text clicked
 			int linkIndex = TMP_TextUtilities.FindIntersectingLink(text, Input.mousePosition, Camera.main);
-			Debug.Log(linkIndex);
 			// If it is equal to -1, it was not found
 			if (linkIndex > -1) {
 				TMP_LinkInfo linkInfo = text.textInfo.linkInfo[linkIndex];

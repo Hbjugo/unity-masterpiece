@@ -6,41 +6,51 @@ using UnityEngine.Tilemaps;
 public class Player : Mover {
 	bool isAttacking = false;
 	bool hasFinished = false;
+	bool initialized = false;
 	Tilemap map;
 	Vector3Int currCell;
 
 	[SerializeField] TileBase[] invalidTiles = new TileBase[0];
-	[SerializeField] int movementRad = 1;
+	int movementRad = 1;
 
 	HashSet<Vector3Int> currNeighbours;
 
-	[SerializeField] float damage = 3f;
+	float damage = 1f;
 	Enemy currTarget;
 
 	BattleStatus bs;
 
-
-	// Start is called before the first frame update
-	protected override void Start() {
-
+	// equivalent to start, called by the BattleStatus
+	public bool Initialize(Vector3Int cell, Character chara) {
 		base.Start();
 
-		bs = FindObjectOfType<BattleStatus>();
+		if (TileIsValid(cell, invalidTiles)) {
+			bs = FindObjectOfType<BattleStatus>();
 
-		currCell = grid.WorldToCell(transform.position);
-		currNeighbours = ComputeNeighbours(currCell, movementRad);
+			map = grid.GetComponentInChildren<Tilemap>();
 
-		map = grid.GetComponentInChildren<Tilemap>();
+			GetComponent<Health>().Initialize(chara.GetHealth());
+			movementRad = chara.GetRadius();
+			gameObject.GetComponent<SpriteRenderer>().sprite = chara.GetSprite();
 
-		bool hasMoved = Move(currCell, invalidTiles);
-		UpdatePos(currCell, hasMoved);
+			transform.position = grid.CellToWorld(cell);
+			Move(cell, invalidTiles);
+			currCell = cell;
+			currNeighbours = ComputeNeighbours(cell, movementRad);
+
+			initialized = true;
+
+			return true;
+		}
+
+		return false;
 	}
 
-    // Update is called once per frame
-    protected override void Update() {
+	// Update is called once per frame
+	protected override void Update() {
 		if (bs.IsItMyTurn(this) && !hasFinished)
 			ColorNeighbours();
-		else
+		else if (bs.IsItMyTurn(this))
 			DecolorNeighbours();
 
 		// if we're attacking, we have to go back to our cell -> once we've reached the enemy, we go back to our original cell
@@ -74,7 +84,7 @@ public class Player : Mover {
 						Attack(enemy);
 
 					// else move in it
-					else {
+					else if (!GetPlayer(mousePos)) {
 						bool hasMoved = Move(mousePos, invalidTiles);
 						UpdatePos(mousePos, hasMoved);
 						hasFinished = true;
@@ -116,9 +126,9 @@ public class Player : Mover {
 	}
 
 	/**
-	 * Check if there is currently an enemy in the given cell
-	 * If there is one, set an enemy target
-	 * returns: true iff the cell designated by the given coordinates currently contains an enemy
+	 * Check if there is currently a player in the given cell
+	 * If there is one, set an player target
+	 * returns: true iff the cell designated by the given coordinates currently contains a player
 	 **/
 	Player GetPlayer(Vector3Int cell) {
 		Player[] players = FindObjectsOfType<Player>();
@@ -145,7 +155,7 @@ public class Player : Mover {
 
 	private void ColorNeighbours() {
 		foreach (Vector3Int c in currNeighbours) {
-			if (TileIsValid(c, invalidTiles)) {
+			if (TileIsValid(c, invalidTiles) && !GetPlayer(c)) {
 				map.SetTileFlags(c, TileFlags.LockTransform);
 				map.SetColor(c, Color.yellow);
 			}
@@ -164,6 +174,9 @@ public class Player : Mover {
 	}
 
 	private void OnDestroy() {
-		bs.PlayerDies();
+		if (initialized)
+			bs.PlayerDies();
 	}
+
+	
 }

@@ -7,9 +7,9 @@ public class Enemy : Mover {
 	Vector3Int currCell;
 
 	[SerializeField] TileBase[] invalidTiles = new TileBase[0];
-	[SerializeField] int movementRad = 1;
+	int movementRad = 1;
 
-	[SerializeField] float damage = 3f;
+	float damage = 1f;
 	Player currTarget;
 
 	bool isAttacking = false;

@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class BattleStatus : MonoBehaviour {
-
+	[SerializeField] Player player;
 
 	public Mover[] movers;
 	int currMover;
@@ -11,11 +10,16 @@ public class BattleStatus : MonoBehaviour {
 	int playerCount;
 	int enemyCount;
 
+	const int HEIGHT = 7;
+	const int WIDTH  = 3;
+
 	GameStatus gs;
 
 	// Start is called before the first frame update
 	void Start() {
 		gs = FindObjectOfType<GameStatus>();
+
+		PlacePlayers();
 
 		movers = FindObjectsOfType<Mover>();
 		Shuffle(movers);
@@ -23,6 +27,42 @@ public class BattleStatus : MonoBehaviour {
 
 		playerCount = FindObjectsOfType<Player>().Length;
 		enemyCount = FindObjectsOfType<Enemy>().Length;
+	}
+
+	private void PlacePlayers() {
+		Vector3Int pos = new Vector3Int(-WIDTH, -HEIGHT, 0);
+
+		pos = PlaceChara(gs.GetLeader(), pos);
+		foreach (Character chara in gs.GetParty()) {
+			pos = PlaceChara(chara, pos);
+		}
+	}
+
+	private Vector3Int PlaceChara(Character c, Vector3Int pos) {
+		bool placed = false;
+		Grid grid = FindObjectOfType<Grid>();
+		while (!placed) {
+			Player p = Instantiate(player);
+
+			if (p.Initialize(pos, c))
+				placed = true;
+			else 
+				Destroy(p.gameObject);
+
+			int x = pos.x;
+			int y = pos.y;
+
+			x += 1;
+			if (x >= WIDTH) {
+				x = -WIDTH;
+				y += 1;
+			}
+
+			pos = new Vector3Int(x, y, 0);
+			
+		}
+
+		return pos;
 	}
 
 	/**
@@ -74,6 +114,7 @@ public class BattleStatus : MonoBehaviour {
 	 **/
 	public void EnemyDies() {
 		enemyCount -= 1;
+		// TODO find a better way to do it, as of right now, the scene world is loaded every time we stop the battle scene
 		if (enemyCount <= 0)
 			gs.BattleWon();
 	}

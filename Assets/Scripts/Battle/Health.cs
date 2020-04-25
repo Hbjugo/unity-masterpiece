@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Health : MonoBehaviour {
-	[SerializeField] float startingHp = 10f;
+	float startingHp;
 	float currHp;
 
-    // Start is called before the first frame update
-    void Start() {
-		currHp = startingHp;
-    }
+    public void Initialize(float healthPoints) {
+		startingHp = healthPoints;
+	}
 
     public void GetHit(float damage) {
 		currHp -= damage;

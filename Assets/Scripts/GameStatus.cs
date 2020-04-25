@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 
 /**
@@ -16,6 +16,11 @@ public class GameStatus : MonoBehaviour {
 	// In World
 	Vector3Int currCell;
 
+	// Party
+	[SerializeField] List<Character> party;
+	[SerializeField] Character partyLeader;
+	const int MAX_CHAR_IN_PARTY = 5;
+
 	// Singleton object
 	private void Awake() {
 		GameStatus[] gss = FindObjectsOfType<GameStatus>();
@@ -23,6 +28,13 @@ public class GameStatus : MonoBehaviour {
 			Destroy(gameObject);
 
 		DontDestroyOnLoad(gameObject);
+
+		party = new List<Character>();
+		partyLeader = new Character("Arthur", 4, 2);
+
+		//TODO remove this
+		RecruitChar(new Character("Smith", 2, 1));
+		RecruitChar(new Character("Arnold", 5, 3));
 	}
 
 	// Start is called before the first frame update
@@ -54,8 +66,27 @@ public class GameStatus : MonoBehaviour {
 		Debug.Log("Perdu");
 	}
 
+	// Party 
+	// TODO maybe add a party manager class ?
+	public void RecruitChar(Character character) {
+		if (party.Count < MAX_CHAR_IN_PARTY)
+			party.Add(character);
+	}
+
+	public void FireChar(Character character) {
+		party.Remove(character);
+	}
+
 	// Getters
 	public Vector3Int GetCurrCell() {
 		return currCell;
+	}
+
+	public List<Character> GetParty() {
+		return party;
+	}
+
+	public Character GetLeader() {
+		return partyLeader;
 	}
 }

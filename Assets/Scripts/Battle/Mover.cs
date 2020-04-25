@@ -22,6 +22,7 @@ public class Mover : MonoBehaviour {
 		// if the current target hasn't been reached, continue to move toward it
 		if (IsMoving())
 			transform.position = Vector3.MoveTowards(transform.position, cellTarget, 0.1f);
+		
 	}
 
 	protected bool IsMoving() {
