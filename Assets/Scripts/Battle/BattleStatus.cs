@@ -58,7 +58,7 @@ public class BattleStatus : MonoBehaviour {
 				y += 1;
 			}
 
-			pos = new Vector3Int(x, y, 0);
+			pos = new Vector3Int(x, y, -1); // TODO find better way of putting them behind the infobulls
 			
 		}
 

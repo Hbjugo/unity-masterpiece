@@ -15,4 +15,8 @@ public class Health : MonoBehaviour {
 		if (currHp <= 0)
 			Destroy(gameObject);
 	}
+
+	public float getCurrHp() {
+		return currHp;
+	}
 }

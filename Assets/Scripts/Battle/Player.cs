@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class Player : Mover {
+	Character chara;
+
 	bool isAttacking = false;
 	bool hasFinished = false;
 	bool initialized = false;
@@ -28,6 +30,8 @@ public class Player : Mover {
 			bs = FindObjectOfType<BattleStatus>();
 
 			map = grid.GetComponentInChildren<Tilemap>();
+
+			this.chara = chara;
 
 			GetComponent<Health>().Initialize(chara.GetHealth());
 			movementRad = chara.GetRadius();
@@ -91,6 +95,8 @@ public class Player : Mover {
 					}
 
 				}
+				else if ((Input.GetMouseButtonDown(1) || Input.GetMouseButtonUp(1)) && mousePos == currCell) 
+					GetComponent<CharInfobull>().Switch(); // TODO store the component
 			}
 		} 
 
@@ -171,6 +177,10 @@ public class Player : Mover {
 
 	public Vector3Int GetCell() {
 		return currCell;
+	}
+
+	public Character GetCharacter() {
+		return chara;
 	}
 
 	private void OnDestroy() {
