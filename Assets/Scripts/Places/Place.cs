@@ -31,7 +31,7 @@ public abstract class Place : MonoBehaviour {
 		events = FindObjectOfType<EventHandler>();
 		Grid grid = FindObjectOfType<Grid>();
 
-		// resets the position, so it is centered with the grid
+		// resets the position, so it is aligned with the grid
 		transform.position = grid.CellToWorld(grid.WorldToCell(transform.position));
 		party = FindObjectOfType<PartyMap>();
 	}
@@ -101,9 +101,7 @@ public abstract class Place : MonoBehaviour {
 	}
 
 	public Quest TurnInQuest(string ID) {
-		Debug.Log(ID);
 		foreach (Quest q in recQuests) {
-			Debug.Log(q.GetID());
 			if (q.GetID() == ID) {
 				recQuests.Remove(q);
 				return q;
