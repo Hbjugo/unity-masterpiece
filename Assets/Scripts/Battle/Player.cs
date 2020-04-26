@@ -57,6 +57,11 @@ public class Player : Mover {
 		else if (bs.IsItMyTurn(this))
 			DecolorNeighbours();
 
+		Vector3Int mousePos = MouseGrid();
+
+		if (Input.GetMouseButtonDown(1) && mousePos == currCell)
+			GetComponent<CharInfobull>().Switch(); // TODO store the component
+
 		// if we're attacking, we have to go back to our cell -> once we've reached the enemy, we go back to our original cell
 		if (!IsMoving()) {
 
@@ -78,7 +83,6 @@ public class Player : Mover {
 
 			else {
 				// get the cell pointed by the mouse
-				Vector3Int mousePos = MouseGrid();
 
 				// if the mouse is clicked on a neighbour cell
 				if (Input.GetMouseButtonDown(0) && IsNextTo(mousePos, currNeighbours)) {
@@ -95,8 +99,6 @@ public class Player : Mover {
 					}
 
 				}
-				else if ((Input.GetMouseButtonDown(1) || Input.GetMouseButtonUp(1)) && mousePos == currCell) 
-					GetComponent<CharInfobull>().Switch(); // TODO store the component
 			}
 		} 
 

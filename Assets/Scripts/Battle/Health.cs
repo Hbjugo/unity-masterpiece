@@ -8,6 +8,7 @@ public class Health : MonoBehaviour {
 
     public void Initialize(float healthPoints) {
 		startingHp = healthPoints;
+		currHp = healthPoints;
 	}
 
     public void GetHit(float damage) {
