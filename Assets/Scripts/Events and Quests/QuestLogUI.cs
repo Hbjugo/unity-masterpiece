@@ -6,6 +6,7 @@ using TMPro;
 public class QuestLogUI : MonoBehaviour {
 	[SerializeField] TextMeshProUGUI text;
 	QuestLog log;
+	PartyMap party;
 
 	bool isActivated;
 
@@ -15,6 +16,7 @@ public class QuestLogUI : MonoBehaviour {
 
 	private void Start() {
 		log = FindObjectOfType<QuestLog>();
+		party = FindObjectOfType<PartyMap>();
 
 		gameObject.SetActive(isActivated);
 	}
@@ -27,6 +29,7 @@ public class QuestLogUI : MonoBehaviour {
 		else 
 			isActivated = false;
 
+		party.SetBusy(isActivated);
 		gameObject.SetActive(isActivated);
 	}
 }
