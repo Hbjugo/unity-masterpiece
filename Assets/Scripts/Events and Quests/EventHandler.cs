@@ -19,6 +19,7 @@ using TMPro;
  **/
 public class EventHandler : MonoBehaviour {
 	[SerializeField] Image eventImage;
+	[SerializeField] Image NPCImage;
 	[SerializeField] TextMeshProUGUI eventText;
 	[SerializeField] Text title;
 	EventTexts texts = new EventTexts();
@@ -34,6 +35,35 @@ public class EventHandler : MonoBehaviour {
 	}
 
 	public void ChangeEvent(string newEvent) {
+		// exiting the current place/ event
+		if (newEvent == "exit") {
+			gameObject.SetActive(false);
+			party.SetBusy(false);
+			// TODO eventually add an exit method to Place ?
+			return;
+		}
+
+
+		// changes the background image
+		party.SetBusy(true);
+		gameObject.SetActive(true);
+
+
+		Sprite newBackground = Resources.Load<Sprite>("Sprites/Events/" + currPlace.GetName() + "/" + newEvent);
+		if (newBackground != null)
+			eventImage.sprite = newBackground;
+
+		Sprite newNPC = Resources.Load<Sprite>("Sprites/NPCs/" + currPlace.GetName() + "/" + newEvent);
+		if (newNPC) {
+			NPCImage.sprite = newNPC;
+			NPCImage.color = new Color(1, 1, 1, 1);
+		}
+		else {
+			NPCImage.sprite = null;
+			NPCImage.color = new Color(1, 1, 1, 0);
+		}
+
+
 		// Case where the quest logger should handle the event
 		if (newEvent.Length >= 5 && newEvent.Substring(0, 5) == "quest") {
 			string questProcessed = log.processQuest(newEvent.Substring(5));
@@ -42,22 +72,8 @@ public class EventHandler : MonoBehaviour {
 			if (questProcessed != "Good")
 				newEvent = questProcessed;
 		}
-		// exiting the current place/ event
-		else if (newEvent == "exit") {
-			gameObject.SetActive(false);
-			party.SetBusy(false);
-			// TODO eventually add an exit method to Place ?
-			return;
-		}
-		
-		party.SetBusy(true);
-		gameObject.SetActive(true);
 
-		// changes the background image
-		Sprite newSprite = Resources.Load<Sprite>("Sprites/Events/" + newEvent);
-		if (newSprite != null)
-			eventImage.sprite = newSprite;
-		
+
 		eventText.text = currPlace.ProcessEvent(newEvent);
 	}
 

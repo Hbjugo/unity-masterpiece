@@ -55,12 +55,12 @@ public class City : Place {
 		public CityTexts() {
 			texts = new Dictionary<string, string>();
 
-			texts.Add("test", "You arrived in the great city of Test.The streets are empty, and all you can find is an inn. \n\n " +
+			texts.Add("Test", "You arrived in the great city of Test.The streets are empty, and all you can find is an inn. \n\n " +
 			"<color=#cc3300><link=\"inn\">Go to the inn</link></color> \n\n <color=#cc3300><link=\"exit\">Leave the city</link></color>");
 			texts.Add("inn", "You enter the inn. Inside, a few townmen are drinking beers, in silence. You find an agent of the adventurer guild, who would be happy to give you a job. \n\n " +
 				"<color=#cc3300><link=\"questTriv\">Ask the agent for a quest</link></color> \n\n " +
 				"<color=#cc3300><link=\"generateChar\">Propose to an adventurer to join your party </link></color> \n\n" +
-				"<color=#cc3300><link=\"test\">Go back to the city</link></color>");
+				"<color=#cc3300><link=\"Test\">Go back to the city</link></color>");
 
 			// Quest texts
 			texts.Add("0001", "You quietly sit at the table the man occupies. You only need to exchange a quick glare to make him understand why you are here. \n\n "
