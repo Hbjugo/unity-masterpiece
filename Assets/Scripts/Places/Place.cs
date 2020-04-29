@@ -7,33 +7,36 @@ using UnityEngine;
  * It could be a city, a bandit's lair, a dungeon, and so on
  * It can be the home to objectives of quests, or to receivers of it
  **/
-public abstract class Place : MonoBehaviour {
+public abstract class Place : LoadableObject {
 	// the name of the place
 	[SerializeField] string placeName;
 
 	PartyMap party;
 	EventHandler events;
 
+	GameStatus gameStatus;
+
 	List<Quest> objQuests;
 	List<Quest> recQuests;
 
 	bool hasEntered;
 
-	private void Awake() {
-		objQuests = new List<Quest>();
-		recQuests = new List<Quest>();
-
-		hasEntered = false;
-	}
-
-	// Start is called before the first frame update
-	void Start() {
+	override public void Load() {
 		events = FindObjectOfType<EventHandler>();
-		Grid grid = FindObjectOfType<Grid>();
 
-		// resets the position, so it is aligned with the grid
-		transform.position = grid.CellToWorld(grid.WorldToCell(transform.position));
 		party = FindObjectOfType<PartyMap>();
+
+		gameStatus = FindObjectOfType<GameStatus>();
+
+		Vector3Int currCell;
+		gameStatus.GetPlaceCell(this, out currCell);
+
+		Grid grid = FindObjectOfType<Grid>();
+		// resets the position, so it is aligned with the grid
+		transform.position = grid.CellToWorld(grid.WorldToCell(currCell));
+
+
+		hasEntered = party.transform.position == transform.position;
 	}
 
     // Update is called once per frame
@@ -58,6 +61,13 @@ public abstract class Place : MonoBehaviour {
 	}
 	public string GetName() {
 		return placeName;
+	}
+	protected GameStatus GetGameStatus() {
+		return gameStatus;
+
+	}
+	protected bool HasEntered() {
+		return hasEntered;
 	}
 
 
