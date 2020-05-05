@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
+using System;
+using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine.SceneManagement;
-
+using System.IO;
 
 /**
  * The current status of the game
@@ -14,25 +17,18 @@ public class GameStatus : MonoBehaviour {
 	// SceneLoader
 	SceneLoader sl;
 
-	// In World
-	PartyMap partyMap;
-
-	// States to be saved
-	Dictionary<Place, Vector3Int> placesCoords;
-	Dictionary<Place, List<Quest>> placesObjQuests;
-	Dictionary<Place, List<Quest>> placesRecQuests;
-	Vector3Int currCell;
-
 	// Party
 	[SerializeField] List<Character> party;
 	[SerializeField] Character partyLeader;
 	const int MAX_CHAR_IN_PARTY = 5;
 
+
 	// Singleton object
 	private void Awake() {
 		GameStatus[] gss = FindObjectsOfType<GameStatus>();
-		if (gss.Length > 1)
+		if (gss.Length > 1) {
 			Destroy(gameObject);
+		}
 
 		DontDestroyOnLoad(gameObject);
 
@@ -46,8 +42,10 @@ public class GameStatus : MonoBehaviour {
 
 	// Start is called before the first frame update
 	void Start() {
-		partyMap = FindObjectOfType<PartyMap>();
-		currCell = new Vector3Int(0, 0, 0);
+		Grid grid = FindObjectOfType<Grid>();
+
+		SaveState();
+		StartCoroutine("LoadWorld");
 	}
 
 	/**
@@ -61,25 +59,80 @@ public class GameStatus : MonoBehaviour {
 		SceneManager.LoadScene("Battle Scene");
 	}
 
-
 	// TODO handle differently the fact that the battle is won or not (should inform the event handler)
 	public void BattleWon() {
 		SceneManager.LoadScene("World");
-		LoadState();
+			StartCoroutine("LoadWorld");
+			StartCoroutine("InformEventHandler", "battleWon");
+		
+
+		
 	}
-
-
 
 	public void BattleLost() {
 		Debug.Log("Perdu");
 	}
 
-	private void SaveState() {
+	IEnumerator InformEventHandler(string eventName) {
+		while (SceneManager.GetActiveScene().name != "World")
+			yield return null;
+
+		if (SceneManager.GetActiveScene().name == "World")
+			FindObjectOfType<EventHandler>().ChangeEvent(eventName);
 	}
 
-	private void LoadState() {
-		foreach (LoadableObject o in FindObjectsOfType<LoadableObject>())
-			o.Load();
+	private void SaveState() {
+		Save save = new Save();
+
+		Vector3Int currCell = FindObjectOfType<PartyMap>().GetCurrCell();
+		save.partyCellX = currCell.x;
+		save.partyCellY = currCell.y;
+
+		Place currPlace = FindObjectOfType<EventHandler>().GetPlace();
+		save.currPlace = currPlace ? currPlace.GetName() : "";
+
+		QuestLog log = FindObjectOfType<QuestLog>();
+		save.log = log.GetLog();
+		save.trivGiven = log.GetTrivGiven();
+		save.pendingQuestID = log.getPendingQuestID();
+
+		foreach (Place p in FindObjectsOfType<Place>()) {
+			save.placesObjQuests.Add(p.GetName(), p.GetObjQuest());
+			save.placesRecQuests.Add(p.GetName(), p.GetRecQuest());
+			save.activatedPlaces.Add(p.GetName(), p.IsActivated());
+		}
+
+		BinaryFormatter bf = new BinaryFormatter();
+		FileStream file = File.Create(Application.persistentDataPath + "/gamesave.save");
+		bf.Serialize(file, save);
+		file.Close();
+
+		Debug.Log("file saved");
+	}
+
+	IEnumerator LoadWorld() {
+		while (SceneManager.GetActiveScene().name != "World")
+			yield return null;
+
+		if (SceneManager.GetActiveScene().name == "World") {
+			BinaryFormatter bf = new BinaryFormatter();
+			FileStream file = File.Open(Application.persistentDataPath + "/gamesave.save", FileMode.Open);
+			Save save = (Save)bf.Deserialize(file);
+			file.Close();
+
+			FindObjectOfType<PartyMap>().Load(save);
+
+			FindObjectOfType<QuestLog>().Load(save);
+
+			foreach (Place p in FindObjectsOfType<Place>()) {
+				p.Load(save);
+				if (p.GetName() == save.currPlace)
+					FindObjectOfType<EventHandler>().SetPlace(p);
+			}
+
+
+			Debug.Log("file loaded");
+		}
 	}
 
 	// Party 
@@ -93,11 +146,6 @@ public class GameStatus : MonoBehaviour {
 		party.Remove(character);
 	}
 
-	// Getters
-	public Vector3Int GetCurrCell() {
-		return currCell;
-	}
-
 	public List<Character> GetParty() {
 		return party;
 	}
@@ -106,8 +154,7 @@ public class GameStatus : MonoBehaviour {
 		return partyLeader;
 	}
 
-
-	public void GetPlaceCell(Place place, out Vector3Int cell) {
-		placesCoords.TryGetValue(place, out cell);
+	public void GetPlaceCell(Place place, out Vector3 cell) {
+		cell = new Vector3();
 	}
 }

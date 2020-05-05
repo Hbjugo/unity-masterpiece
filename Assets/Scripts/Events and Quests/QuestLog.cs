@@ -13,8 +13,8 @@ using TMPro;
  * 
  **/
 public class QuestLog : MonoBehaviour {
-	List<Quest> log; // TODO eventually add a way to limit the number of quests in the log
 	QuestTexts texts;
+	QuestBank bank;
 
 	const int NB_TRIV_QUESTS = 1;
 
@@ -27,26 +27,15 @@ public class QuestLog : MonoBehaviour {
 
 	EventHandler events;
 
+	// The log consists of a dictionnary. Each key is the ID of a quest, and the boolean says if the quest is already accomplished or not.
+	Dictionary<string, bool> log = new Dictionary<string, bool>();
 	// The log isn't able to differentiate two same type triv quests (they have the same ID), so it stores the places that have already given a trivial quest 
 	// TODO maybe a same place gould give multiple trivial quests ?
-	Dictionary<Place, Quest> trivGiven;
+	Dictionary<string, string> trivGiven = new Dictionary<string, string>();
 
 	// Places for triv quest
-	[SerializeField] MonsterPlace monsters;
-	[SerializeField] TileBase[] validMonsters;
-
-
-	// Singleton pattern
-	private void Awake() {
-		if (FindObjectsOfType<QuestLog>().Length > 1)
-			Destroy(gameObject);
-
-		DontDestroyOnLoad(gameObject);
-
-		log = new List<Quest>();
-		trivGiven = new Dictionary<Place, Quest>();
-		texts = new QuestTexts();
-	}
+	[SerializeField] MonsterPlace monsters = null;
+	[SerializeField] TileBase[] validMonsters = null;
 
 
 	// Start is called before the first frame update
@@ -55,7 +44,16 @@ public class QuestLog : MonoBehaviour {
 		party = FindObjectOfType<PartyMap>();
 
 		events = FindObjectOfType<EventHandler>();
+		bank = FindObjectOfType<QuestBank>();
     }
+
+	public void Load(Save save) {
+		log = save.log;
+		trivGiven = save.trivGiven;
+		pendingQuestID = save.pendingQuestID;
+
+		texts = new QuestTexts();
+	}
 
 	/**
 	 * This is the main method of this class. It is responsible to process what the event handler is telling him
@@ -93,7 +91,15 @@ public class QuestLog : MonoBehaviour {
 
 		
 		pendingQuestID = quest;
-		return pendingQuestID;
+		if (!log.ContainsKey(quest))
+			return pendingQuestID;
+
+		bool questAlreadyAccomplished;
+		log.TryGetValue(pendingQuestID, out questAlreadyAccomplished);
+		if (questAlreadyAccomplished)
+			return quest + "Accomplished";
+
+		return quest + "AlreadyGiven";
 	}
 
 
@@ -105,85 +111,26 @@ public class QuestLog : MonoBehaviour {
 	 * Else, it generates a new trivial quest ID.
 	 **/
 	string HandleTriv() {
-		if (!trivGiven.ContainsKey(events.GetPlace())) {
+		if (!trivGiven.ContainsKey(events.GetPlace().GetName())) {
 			pendingQuestID = Random.Range(1, NB_TRIV_QUESTS + 1).ToString("D4");
 			return pendingQuestID;
 		}
 		
-		Quest currTriv;
-		trivGiven.TryGetValue(events.GetPlace(), out currTriv);
-		pendingQuestID = currTriv.GetID();
-		if (currTriv.IsAccomplished())
+		trivGiven.TryGetValue(events.GetPlace().GetName(), out pendingQuestID);
+		bool isCurrTrivAccomplished;
+		log.TryGetValue(pendingQuestID, out isCurrTrivAccomplished);
+		if (isCurrTrivAccomplished)
 			return "TrivAccomplished";
 
 		return "TrivAlreadyGiven";
-	}
-
-	/**
-	 * Once a new trivial quest has been accepted, we still ought to create it. 
-	 * This methods check what kind of trivial quest should be created, based on the ID that has been already generated.
-	 * TODO add more kind of trivial quests
-	 **/
-	string GenerateTrivQuest() {
-		switch (pendingQuestID) {
-			case "0001":
-				return GenerateMonsterHunt();
-			default:
-				Debug.LogError("Generated a wrong quest");
-				return "Error";
-		}
-
-	}
-
-	/**
-	 * For quests types
-	 * 0000 -> empty quest
-	 * 0xxx -> trivial quest
-	 *  -> 0001 -> 0099 : battle quest
-	 *  -> 0100 -> 0199 : fedex  quest (exemples)
-	 **/
-
-	// Monster Hunt trivial quest
-	/**
-	 * Generate a simple trivial quest, where the party has to defeat a group of monsters
-	 * The method finds a cell where it can place the monsters, then creates the quest
-	 **/
-	string GenerateMonsterHunt() {
-		bool generated = false;
-		Vector3Int coords = new Vector3Int();
-		Vector3Int partyCell = map.WorldToCell(party.GetCurrCell());
-
-		int attempts = 0;
-		// TODO check no overlap with other quest
-		while (!generated && attempts < 10000) {
-			int randX = Random.Range(-10, 11);
-			int randY = Random.Range(-10, 11);
-			coords = new Vector3Int(partyCell.x + randX, partyCell.y + randY, partyCell.z);
-			bool isValid = false;
-			foreach (TileBase tile in validMonsters) if (tile == map.GetTile(coords))
-					isValid = true;
-
-			generated = (randX != 0 || randY != 0) && isValid;
-			attempts++;
-		}
-		if (attempts >= 10000)
-			return "Error";
-
-		MonsterPlace obj = Instantiate(monsters) as MonsterPlace;
-		obj.transform.position = map.CellToWorld(coords);
-
-		Quest quest = new Quest(pendingQuestID, texts.GetText(pendingQuestID), events.GetPlace(), obj);
-		log.Add(quest);
-		trivGiven.Add(events.GetPlace(), quest);
-		return "Good";
 	}
 
 
 	public string LogToString() {
 		StringBuilder sb = new StringBuilder();
 		sb.Append("Current quests : \n\n\n");
-		foreach (Quest q in log)
-			sb.Append(texts.GetText(q.GetID()) + "\n\n");
+		foreach (string id in log.Keys)
+			sb.Append(texts.GetText(id) + "\n\n");
 
 		return sb.ToString();
 	}
@@ -193,28 +140,42 @@ public class QuestLog : MonoBehaviour {
 
 	// Auxiliary methods
 	string CreateQuest() {
-		if (pendingQuestID[0] == '0')
-			return GenerateTrivQuest();
+		bank.CreateQuest(pendingQuestID);
+		log.Add(pendingQuestID, false);
 
-		// TODO when we will have unique quests : log.Add(new Quest(ID, events.GetCurrPlace(), ));
-		return "Error";
+		// Add the quest to the trivial given if it is a trivial quest
+		if (pendingQuestID[0] == '0')
+			trivGiven.Add(events.GetPlace().GetName(), pendingQuestID);
+
+		return "Good";
 	}
 
 	// Announces to the current place that one of its quests has been accomplished
 	string AccomplishQuest(string questID) {
 		events.GetPlace().AccomplishQuest(questID);
+		log[questID] = true;
 		return "Good";
 	}
 
 	// removes the quest from the log and announces to the current place that this quest has been turned in
 	// TODO make sure that there can be only one same type triv at the same time
 	string TurnInQuest(string questID) {
-		Quest questToRemove = events.GetPlace().TurnInQuest(questID);
-		log.Remove(questToRemove);
+		events.GetPlace().TurnInQuest(questID);
+		log.Remove(questID);
 		// if triv, remove it from the map
 		if (questID[0] == '0')
-			trivGiven.Remove(events.GetPlace());
+			trivGiven.Remove(events.GetPlace().GetName());
 		return "Good";
+	}
+
+	public Dictionary<string, bool> GetLog() {
+		return log;
+	}
+	public Dictionary<string, string> GetTrivGiven() {
+		return trivGiven;
+	}
+	public string getPendingQuestID() {
+		return pendingQuestID;
 	}
 
 	private class QuestTexts {

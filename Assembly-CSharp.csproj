@@ -74,6 +74,7 @@
     <Compile Include="Assets\Scripts\ClickableText.cs" />
     <Compile Include="Assets\Scripts\Events and Quests\EventHandler.cs" />
     <Compile Include="Assets\Scripts\Events and Quests\Quest.cs" />
+    <Compile Include="Assets\Scripts\Events and Quests\QuestBank.cs" />
     <Compile Include="Assets\Scripts\Events and Quests\QuestLog.cs" />
     <Compile Include="Assets\Scripts\Events and Quests\QuestLogUI.cs" />
     <Compile Include="Assets\Scripts\GameStatus.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="Assets\Scripts\Places\City.cs" />
     <Compile Include="Assets\Scripts\Places\MonsterPlace.cs" />
     <Compile Include="Assets\Scripts\Places\Place.cs" />
+    <Compile Include="Assets\Scripts\Save.cs" />
     <Compile Include="Assets\Scripts\SceneLoader.cs" />
     <Compile Include="Assets\Scripts\Texts\CityTexts.cs" />
     <Compile Include="Assets\Scripts\Texts\EventTexts.cs" />

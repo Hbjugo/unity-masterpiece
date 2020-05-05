@@ -26,18 +26,10 @@ public class PartyMap : Mover {
 
 		base.Start();
 
-		// gets the current cell of the party, based on the game status
-		currCell = gs.GetCurrCell();
-		transform.position = grid.CellToWorld(currCell);
-
 		// compute the first neighbours
 		currNeighbours = ComputeNeighbours(currCell, movementRad);
 
 		map = grid.GetComponentInChildren<Tilemap>();
-
-		// move the player to the currCell, to be sure he is on the right spot at the start
-		bool hasMoved = Move(currCell, invalidTiles);
-		UpdatePos(currCell, hasMoved);
 	}
 
     // Update is called once per frame
@@ -64,6 +56,16 @@ public class PartyMap : Mover {
 
 		base.Update();
 	}
+
+	public void Load(Save save) {
+		currCell = new Vector3Int(save.partyCellX, save.partyCellY, 0);
+
+		transform.position = grid.CellToWorld(currCell);
+
+		// move the player to the currCell, to be sure he is on the right spot at the start
+		bool hasMoved = Move(currCell, invalidTiles);
+		UpdatePos(currCell, hasMoved);
+	} 
 
 
 	/**

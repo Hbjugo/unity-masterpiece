@@ -39,6 +39,7 @@ public class EventHandler : MonoBehaviour {
 		if (newEvent == "exit") {
 			gameObject.SetActive(false);
 			party.SetBusy(false);
+			currPlace = null;
 			// TODO eventually add an exit method to Place ?
 			return;
 		}

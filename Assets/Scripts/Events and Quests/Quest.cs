@@ -16,16 +16,12 @@ using UnityEngine;
  **/
 public class Quest {
 	string ID;
-	Quest[] subObjs; // TODO add a way to have sub-objectives
 	bool isAccomplished;
 
-	string description;
-
-	public Quest(string ID, string description, Place receiverPlace, params Place[] objectivesPlaces) {
+	public Quest(string ID, Place receiverPlace, params Place[] objectivesPlaces) {
 		this.ID = ID;
-		this.description = description;
 		// announce to its receiver's place it should be able to handle this quest
-		receiverPlace.AddQuestReceiver(this);
+		receiverPlace.AddQuestReceiver(ID);
 
 		// if there is no objective, then the quest must only be turned in
 		if (objectivesPlaces == null)
@@ -33,7 +29,7 @@ public class Quest {
 		else {
 			// announce to each of its objectives it should be able to handle this quest
 			foreach (Place place in objectivesPlaces)
-				place.AddQuestObjective(this);
+				place.AddQuestObjective(ID);
 
 			isAccomplished = false;
 		}

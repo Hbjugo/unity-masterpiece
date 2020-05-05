@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2841974755925962374}
-  - component: {fileID: 1396509603}
   - component: {fileID: 8099214738018715040}
+  - component: {fileID: 1601662750}
   m_Layer: 0
   m_Name: GameStatus 1
   m_TagString: Untagged
@@ -32,21 +32,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1396509603
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2841974755925962372}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80c7ed0386e07a145a0638316eae917b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  monsters: {fileID: 637010746, guid: 595787ce45eb18c42a5bb8497ad8a63b, type: 3}
-  validMonsters:
-  - {fileID: 11400000, guid: 9d848ae6a9a7aa440b85105563673dc8, type: 2}
 --- !u!114 &8099214738018715040
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59,3 +44,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1266aeeba55c9449822272445c13b1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1601662750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2841974755925962372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c9586ee3fd54124db6314533ea57c39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  monsterHunt: {fileID: 0}

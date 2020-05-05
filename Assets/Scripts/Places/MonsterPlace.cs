@@ -10,6 +10,9 @@ using UnityEngine;
  * After the battle, if the battle is won, the quest is accomplished and the player can continue its business
  **/
 public class MonsterPlace : Place {
+	// The name of the city who gave you the quest
+	[SerializeField] string cityName;
+
 	MonsterTexts texts = new MonsterTexts();
 
 	public override void Enter() {
@@ -19,7 +22,22 @@ public class MonsterPlace : Place {
 	}
 
 	public override string ProcessEvent(string id) {
+		if (id == "0001AlreadyGiven") {
+			FindObjectOfType<GameStatus>().EnterBattle();
+			return "";
+		}
+
 		return texts.GetText(id);
+	}
+
+	// Once the quest has been accomplished, this place has no further use
+	override public void AccomplishQuest(string ID) {
+		base.AccomplishQuest(ID);
+		Activate(false);
+	}
+
+	public string GetCityName() {
+		return cityName;
 	}
 
 	private class MonsterTexts {
@@ -29,7 +47,7 @@ public class MonsterPlace : Place {
 			texts = new Dictionary<string, string>();
 
 			texts.Add("monsterHunt", "You arrived in the forest. Quickly, you find the monsters you were looking for. \n\n " +
-			"<color=#cc3300><link=\"battleWon\">Engage them</link></color> \n\n <color=#cc3300><link=\"exit\">Go back</link></color>");
+			"<color=#cc3300><link=\"quest0001\">Engage them</link></color> \n\n <color=#cc3300><link=\"exit\">Go back</link></color>");
 
 			texts.Add("battleWon", "The beasts are slain. You should collect a few trophies, so you can prove your deeds to the Guild \n\n " +
 				"<color=#cc3300><link=\"questAccomplished\">Collect some trophies</link></color>");
@@ -44,11 +62,5 @@ public class MonsterPlace : Place {
 				Debug.LogError("text not found for " + name);
 			return text;
 		}
-	}
-
-	// Once the quest has been accomplished, this place has no further use
-	override public void AccomplishQuest(string ID) {
-		base.AccomplishQuest(ID);
-		Destroy(gameObject);
 	}
 }
