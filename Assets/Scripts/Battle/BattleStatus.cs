@@ -15,8 +15,11 @@ public class BattleStatus : MonoBehaviour {
 
 	GameStatus gs;
 
+	bool battleResolved = false;
+
 	// Start is called before the first frame update
 	void Start() {
+		Debug.Log(FindObjectsOfType<GameStatus>().Length);
 		gs = FindObjectOfType<GameStatus>();
 		
 		PlacePlayers();
@@ -25,8 +28,6 @@ public class BattleStatus : MonoBehaviour {
 		movers = FindObjectsOfType<Mover>();
 		Shuffle(movers);
 		currMover = 0;
-		foreach (Player m in FindObjectsOfType<Player>())
-			Debug.Log(m.GetCharacter().GetName());
 
 		playerCount = FindObjectsOfType<Player>().Length;
 		enemyCount = FindObjectsOfType<Enemy>().Length;
@@ -38,7 +39,6 @@ public class BattleStatus : MonoBehaviour {
 		pos = PlaceChara(gs.GetLeader(), pos);
 		foreach (Character chara in gs.GetParty()) {
 			pos = PlaceChara(chara, pos);
-			Debug.Log("successfuly placed a char, now there are " + FindObjectsOfType<Player>().Length + " players");
 		}
 	}
 
@@ -105,8 +105,10 @@ public class BattleStatus : MonoBehaviour {
 	 **/
 	public void PlayerDies() {
 		playerCount -= 1;
-		if (playerCount <= 0)
+		if (playerCount <= 0 && !battleResolved) {
+			battleResolved = true;
 			gs.BattleLost();
+		}
 	}
 
 	/**
@@ -116,7 +118,9 @@ public class BattleStatus : MonoBehaviour {
 	public void EnemyDies() {
 		enemyCount -= 1;
 		// TODO find a better way to do it, as of right now, the scene world is loaded every time we stop the battle scene
-		if (enemyCount <= 0)
+		if (enemyCount <= 0 && !battleResolved) {
+			battleResolved = true;
 			gs.BattleWon();
+		}
 	}
 }

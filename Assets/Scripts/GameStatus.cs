@@ -45,8 +45,8 @@ public class GameStatus : MonoBehaviour {
 	void Start() {
 		Grid grid = FindObjectOfType<Grid>();
 
-		//SaveState();
-		//StartCoroutine("LoadWorld");
+		SaveState();
+		StartCoroutine("LoadWorld");
 	}
 
 	/**
