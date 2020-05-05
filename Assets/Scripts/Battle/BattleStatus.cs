@@ -18,12 +18,15 @@ public class BattleStatus : MonoBehaviour {
 	// Start is called before the first frame update
 	void Start() {
 		gs = FindObjectOfType<GameStatus>();
-
+		
 		PlacePlayers();
+
 
 		movers = FindObjectsOfType<Mover>();
 		Shuffle(movers);
 		currMover = 0;
+		foreach (Player m in FindObjectsOfType<Player>())
+			Debug.Log(m.GetCharacter().GetName());
 
 		playerCount = FindObjectsOfType<Player>().Length;
 		enemyCount = FindObjectsOfType<Enemy>().Length;
@@ -35,19 +38,17 @@ public class BattleStatus : MonoBehaviour {
 		pos = PlaceChara(gs.GetLeader(), pos);
 		foreach (Character chara in gs.GetParty()) {
 			pos = PlaceChara(chara, pos);
+			Debug.Log("successfuly placed a char, now there are " + FindObjectsOfType<Player>().Length + " players");
 		}
 	}
 
 	private Vector3Int PlaceChara(Character c, Vector3Int pos) {
 		bool placed = false;
 		Grid grid = FindObjectOfType<Grid>();
+		Player p = Instantiate(player);
 		while (!placed) {
-			Player p = Instantiate(player);
-
 			if (p.Initialize(pos, c))
 				placed = true;
-			else 
-				Destroy(p.gameObject);
 
 			int x = pos.x;
 			int y = pos.y;
@@ -58,7 +59,7 @@ public class BattleStatus : MonoBehaviour {
 				y += 1;
 			}
 
-			pos = new Vector3Int(x, y, 0); // TODO find better way of putting them behind the infobulls
+			pos = new Vector3Int(x, y, 0);
 			
 		}
 

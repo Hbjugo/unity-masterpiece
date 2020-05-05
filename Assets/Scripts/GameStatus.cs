@@ -38,14 +38,15 @@ public class GameStatus : MonoBehaviour {
 		//TODO remove this
 		RecruitChar(new Character("Smith", 2, 1));
 		RecruitChar(new Character("Arnold", 5, 3));
+		RecruitChar(new Character("Smith", 5, 2));
 	}
 
 	// Start is called before the first frame update
 	void Start() {
 		Grid grid = FindObjectOfType<Grid>();
 
-		SaveState();
-		StartCoroutine("LoadWorld");
+		//SaveState();
+		//StartCoroutine("LoadWorld");
 	}
 
 	/**

@@ -44,7 +44,6 @@ public abstract class Place : MonoBehaviour {
 
 		Vector3Int currCell = grid.WorldToCell(transform.position);
 		hasEntered = save.partyCellX == currCell.x && save.partyCellY == currCell.y;
-		Debug.Log(currCell + " " + new Vector3Int(save.partyCellX, save.partyCellY, 0));
 
 		save.placesObjQuests.TryGetValue(placeName, out objQuests);
 		save.placesRecQuests.TryGetValue(placeName, out recQuests);

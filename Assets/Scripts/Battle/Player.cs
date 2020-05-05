@@ -168,6 +168,8 @@ public class Player : Mover {
 				map.SetColor(c, Color.yellow);
 			}
 		}
+		map.SetTileFlags(currCell, TileFlags.LockTransform);
+		map.SetColor(currCell, Color.red);
 	}
 
 	private void DecolorNeighbours() {
@@ -175,6 +177,8 @@ public class Player : Mover {
 			map.SetColor(c, Color.white);
 			map.SetTileFlags(c, TileFlags.LockAll);
 		}
+		map.SetColor(currCell, Color.white);
+		map.SetTileFlags(currCell, TileFlags.LockAll);
 	}
 
 	public Vector3Int GetCell() {
