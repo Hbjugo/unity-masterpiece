@@ -123,4 +123,8 @@ public class PartyMap : Mover {
 	public Vector3Int GetCurrCell() {
 		return currCell;
 	}
+
+	public override Character GetCharacter() {
+		throw new InvalidOperationException();
+	}
 }

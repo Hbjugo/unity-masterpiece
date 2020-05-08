@@ -15,7 +15,7 @@ public class PartyManager : MonoBehaviour {
 		DontDestroyOnLoad(gameObject);
 
 		party = new List<Character>();
-		partyLeader = new Character("Arthur", 1, 1, FindObjectOfType<EquipmentBank>().GetEquipment("0001"));
+		partyLeader = new Character("Arthur", 1, 1, new Equipment("0001", 1, 0));
 		Recruit(new Character("Mehdouche", 1, 1, new Equipment("0000", 0, 0)));
 	}
 

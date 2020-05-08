@@ -17,6 +17,8 @@ public class Player : Mover {
 
 	HashSet<Vector3Int> currNeighbours;
 
+	Infobull infobull;
+
 	float damage = 1f;
 	Enemy currTarget;
 
@@ -30,6 +32,8 @@ public class Player : Mover {
 			bs = FindObjectOfType<BattleStatus>();
 
 			map = grid.GetComponentInChildren<Tilemap>();
+
+			infobull = FindObjectOfType<Infobull>();
 
 			this.chara = chara;
 
@@ -57,11 +61,8 @@ public class Player : Mover {
 		else if (bs.IsItMyTurn(this))
 			DecolorNeighbours();
 
-		// get the cell pointed by the mouse
-		Vector3Int mousePos = MouseGrid();
-
-		if (Input.GetMouseButtonDown(1) && mousePos == currCell)
-			GetComponent<CharInfobull>().Switch(); // TODO store the component
+		if (Input.GetMouseButtonDown(1) && MouseGrid() == currCell)
+			infobull.Display(GetCharacter(), Input.mousePosition);
 
 		// if we're attacking, we have to go back to our cell -> once we've reached the enemy, we go back to our original cell
 		if (!IsMoving()) {
@@ -83,6 +84,7 @@ public class Player : Mover {
 
 
 			else {
+				Vector3Int mousePos = MouseGrid();
 
 				// if the mouse is clicked on a neighbour cell
 				if (Input.GetMouseButtonDown(0) && IsNextTo(mousePos, currNeighbours)) {
@@ -103,16 +105,6 @@ public class Player : Mover {
 		} 
 
 		base.Update();
-	}
-
-
-	/**
-	 * Gets the current cell pointed by the mouse
-	 * returns: the coordinates of the cell the mouse is in
-	 **/
-	Vector3Int MouseGrid() {
-		Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		return grid.WorldToCell(mousePos);
 	}
 
 
@@ -185,7 +177,7 @@ public class Player : Mover {
 		return currCell;
 	}
 
-	public Character GetCharacter() {
+	public override Character GetCharacter() {
 		return chara;
 	}
 

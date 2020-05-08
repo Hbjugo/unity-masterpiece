@@ -6,8 +6,10 @@ using UnityEngine.Tilemaps;
 public class Enemy : Mover {
 	Vector3Int currCell;
 
+	[SerializeField] string charName;
+	[SerializeField] int movementRad = 1;
+	[SerializeField] int health = 1;
 	[SerializeField] TileBase[] invalidTiles = new TileBase[0];
-	int movementRad = 1;
 
 	float damage = 1f;
 	Player currTarget;
@@ -16,6 +18,7 @@ public class Enemy : Mover {
 	bool hasFinished = false;
 
 	BattleStatus bs;
+	Infobull infobull;
 
 	// Start is called before the first frame update
 	protected override void Start() {
@@ -23,13 +26,20 @@ public class Enemy : Mover {
 
 		bs = FindObjectOfType<BattleStatus>();
 
+		infobull = FindObjectOfType<Infobull>();
+
 		currCell = grid.WorldToCell(transform.position);
 
 		Move(currCell, invalidTiles);
+
+		GetComponent<Health>().Initialize(health);
 	}
 
     // Update is called once per frame
     protected override void Update() {
+		if (Input.GetMouseButtonDown(1) && MouseGrid() == currCell)
+			infobull.Display(GetCharacter(), Input.mousePosition);
+
 		if (!IsMoving()) {
 
 			if (hasFinished) {
@@ -144,6 +154,10 @@ public class Enemy : Mover {
 
 	public Vector3Int GetCell() {
 		return currCell;
+	}
+	
+	public override Character GetCharacter() {
+		return new Character(charName, health, movementRad, new Equipment("", 0, 0));
 	}
 
 	private void OnDestroy() {

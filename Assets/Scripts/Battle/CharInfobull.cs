@@ -28,7 +28,6 @@ public class CharInfobull : MonoBehaviour
 	}
 
 	public void Switch() {
-		Debug.Log(infobull);
 		infobull.SetActive(isActivated = !isActivated);
 	}
 }

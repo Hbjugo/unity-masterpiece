@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class Mover : MonoBehaviour {
+public abstract class Mover : MonoBehaviour {
 
 	protected GameStatus gs;
 
@@ -23,6 +23,15 @@ public class Mover : MonoBehaviour {
 		if (IsMoving())
 			transform.position = Vector3.MoveTowards(transform.position, cellTarget, 0.1f);
 		
+	}
+
+	/**
+	 * Gets the current cell pointed by the mouse
+	 * returns: the coordinates of the cell the mouse is in
+	 **/
+	protected Vector3Int MouseGrid() {
+		Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		return grid.WorldToCell(mousePos);
 	}
 
 	protected bool IsMoving() {
@@ -118,6 +127,8 @@ public class Mover : MonoBehaviour {
 		}
 		return false;
 	}
+
+	public abstract Character GetCharacter();
 
 
 

@@ -15,6 +15,7 @@ public class BattleStatus : MonoBehaviour {
 
 	GameStatus gs;
 	PartyManager party;
+	BattleOrderUI UI;
 
 	bool battleResolved = false;
 
@@ -22,12 +23,15 @@ public class BattleStatus : MonoBehaviour {
 	void Start() {
 		gs = FindObjectOfType<GameStatus>();
 		party = FindObjectOfType<PartyManager>();
+
+		UI = FindObjectOfType<BattleOrderUI>();
 		
 		PlacePlayers();
 
 
 		movers = FindObjectsOfType<Mover>();
 		Shuffle(movers);
+		UI.ShowOrder(movers);
 		currMover = 0;
 
 		playerCount = FindObjectsOfType<Player>().Length;
@@ -73,6 +77,7 @@ public class BattleStatus : MonoBehaviour {
 	public void Next() {
 		do {
 			currMover = (currMover + 1) % movers.Length;
+			UI.Next();
 		} while (!movers[currMover]);
 	}
 
