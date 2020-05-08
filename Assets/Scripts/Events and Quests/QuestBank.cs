@@ -7,7 +7,7 @@ public class QuestBank : MonoBehaviour {
     public void CreateQuest(string ID) {
 		switch (ID.Substring(2)) {
 			case "01":
-				CreateMonsterHuntInTest(ID.Substring(0, 2));
+				CreateMonsterHunt(ID.Substring(0, 2));
 				break;
 			case "02":
 				CreateDeliveringQuestToOtherCity(ID.Substring(0, 2));
@@ -19,7 +19,22 @@ public class QuestBank : MonoBehaviour {
 		}
 	}
 
-	private void CreateMonsterHuntInTest(string placeID) {
+	public void GiveAward(string ID) {
+		switch (ID.Substring(2)) {
+			case "01":
+				AwardMonsterHunt();
+				break;
+			case "02":
+				AwardDelivering();
+				break;
+			case "03":
+				AwardThief();
+				break;
+			default: break;
+		}
+	}
+
+	private void CreateMonsterHunt(string placeID) {
 		MonsterPlace monsterHunt = null;
 		foreach (MonsterPlace p in FindObjectsOfType<MonsterPlace>()) if (p.GetCityID() == placeID) monsterHunt = p;
 		if (!monsterHunt)
@@ -31,9 +46,16 @@ public class QuestBank : MonoBehaviour {
 
 	private void CreateDeliveringQuestToOtherCity(string placeID) {
 		string otherID;
-		int citiesCount = FindObjectsOfType<City>().Length;
-		while ((otherID = UnityEngine.Random.Range(0, citiesCount).ToString("D2")) == placeID) ;
+		switch (placeID) {
+			case "00": otherID = "01";
+				break;
+			case "01": otherID = "00";
+				break;
+			default: otherID = "XX";
+				break;
+		}
 		Place objAndRec = FindPlace(otherID);
+		Debug.Log(objAndRec);
 		ActivateQuest(placeID + "02", objAndRec, objAndRec);
 	}
 
@@ -41,6 +63,19 @@ public class QuestBank : MonoBehaviour {
 		Debug.Log(placeID);
 		Place objAndRec = FindPlace(placeID);
 		ActivateQuest(placeID + "03", objAndRec, objAndRec);
+	}
+
+	private void AwardMonsterHunt() {
+		FindObjectOfType<Wallet>().AddMoney(50);
+	}
+
+	private void AwardDelivering() {
+		FindObjectOfType<Wallet>().AddMoney(25);
+
+	}
+
+	private void AwardThief() {
+		FindObjectOfType<Wallet>().AddMoney(40);
 	}
 
 	private Place FindPlace(string placeID) {

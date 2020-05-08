@@ -60,7 +60,7 @@ public class QuestLogUI : MonoBehaviour {
 			texts.Add("0102", "A client of the adventurers' Guild has asked for a package to be delivered in the city of Test. It is northeast from the city of Criss, where you were given this task.");
 
 			texts.Add("0003", "The merchants' Guild has hired you to get rid of a thief in the city of Test. Make sure he will never rob them again and they will reward you.");
-			texts.Add("0003", "The merchants' Guild has hired you to get rid of a thief in the city of Criss. Make sure he will never rob them again and they will reward you.");
+			texts.Add("0103", "The merchants' Guild has hired you to get rid of a thief in the city of Criss. Make sure he will never rob them again and they will reward you.");
 		}
 
 		public string GetText(string name) {

@@ -103,8 +103,10 @@ public abstract class Place : MonoBehaviour {
 
 	// Related to quests
 	public void AddQuestObjective(string quest) {
-		Debug.Log(objQuests);
 		objQuests.Add(quest);
+		foreach (string id in objQuests)
+			Debug.Log(id);
+		Debug.Log("obj added");
 	}
 
 	public void AddQuestReceiver(string quest) {
@@ -114,6 +116,9 @@ public abstract class Place : MonoBehaviour {
 	// Multiple same type trivial quests could be logged in the QL at the same time -> ask the place to accomplish it, because the QL is not able to differentiate them
 	public virtual void AccomplishQuest(string ID) {
 		objQuests.Remove(ID);
+		foreach (string id in objQuests)
+			Debug.Log(id);
+		Debug.Log("quest accomplished");
 	}
 
 	public virtual void TurnInQuest(string ID) {

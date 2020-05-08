@@ -3,7 +3,11 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Character Icon
+  - Equipment Icon
+  - Fire Button
+  - Armory Tab
   layers:
   - Default
   - TransparentFX

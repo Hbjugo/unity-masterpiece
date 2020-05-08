@@ -15,22 +15,19 @@ public class PartyManager : MonoBehaviour {
 		DontDestroyOnLoad(gameObject);
 
 		party = new List<Character>();
-		partyLeader = new Character("Arthur", 4, 2);
-
-		//TODO remove this
-		Recruit(new Character("Smith", 2, 1));
-		Recruit(new Character("Arnold", 5, 3));
-		Recruit(new Character("Smith", 5, 2));
+		partyLeader = new Character("Arthur", 1, 1, FindObjectOfType<EquipmentBank>().GetEquipment("0001"));
+		Recruit(new Character("Mehdouche", 1, 1, new Equipment("0000", 0, 0)));
 	}
 
 	public void Load(Save save) {
 		// resetting
 		party = new List<Character>();
 		partyLeader = null;
-
-		partyLeader = new Character(save.charNames[0], save.charHealth[0], save.charRadius[0]);
+		EquipmentBank bank = FindObjectOfType<EquipmentBank>();
+		partyLeader = new Character(save.charNames[0], save.charHealth[0], save.charRadius[0], bank.GetEquipment(save.charEquipments[0]));
+		Debug.Log(save.charRadius[0]);
 		for (int i = 1; i < save.charNames.Count; ++i)
-			Recruit(new Character(save.charNames[i], save.charHealth[i], save.charRadius[i]));
+			Recruit(new Character(save.charNames[i], save.charHealth[i], save.charRadius[i], bank.GetEquipment(save.charEquipments[i])));
 	}
 
 	public void Recruit(Character chara) {

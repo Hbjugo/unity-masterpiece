@@ -74,6 +74,8 @@ public class GameStatus : MonoBehaviour {
 		Place currPlace = FindObjectOfType<EventHandler>().GetPlace();
 		save.currPlace = currPlace ? currPlace.GetID() : "";
 
+		save.money = FindObjectOfType<Wallet>().GetMoney();
+
 		QuestLog log = FindObjectOfType<QuestLog>();
 		save.log = log.GetLog();
 		save.pendingQuestID = log.getPendingQuestID();
@@ -81,12 +83,14 @@ public class GameStatus : MonoBehaviour {
 		PartyManager party = FindObjectOfType<PartyManager>();
 		Character leader = party.GetLeader();
 		save.charNames.Add(leader.GetName());
-		save.charHealth.Add(leader.GetHealth());
-		save.charRadius.Add(leader.GetRadius());
+		save.charHealth.Add(leader.GetBaseHealth());
+		save.charRadius.Add(leader.GetBaseRadius());
+		save.charEquipments.Add(leader.GetEquipment().GetID());
 		foreach (Character c in party.GetParty()) {
 			save.charNames.Add(c.GetName());
-			save.charHealth.Add(c.GetHealth());
-			save.charRadius.Add(c.GetRadius());
+			save.charHealth.Add(c.GetBaseHealth());
+			save.charRadius.Add(c.GetBaseRadius());
+			save.charEquipments.Add(c.GetEquipment().GetID());
 		}
 
 		foreach (Place p in FindObjectsOfType<Place>()) {
@@ -118,6 +122,8 @@ public class GameStatus : MonoBehaviour {
 			FindObjectOfType<QuestLog>().Load(save);
 
 			FindObjectOfType<PartyManager>().Load(save);
+
+			FindObjectOfType<Wallet>().Load(save);
 
 			foreach (Place p in FindObjectsOfType<Place>()) {
 				p.Load(save);

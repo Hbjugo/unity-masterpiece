@@ -29,7 +29,7 @@ public abstract class City : Place {
 			return "";
 		}
 		if (id == "recruitThief")
-			FindObjectOfType<PartyManager>().Recruit(new Character("Mehdouche", 2, 4));
+			FindObjectOfType<PartyManager>().Recruit(new Character("Mehdouche", 2, 4, FindObjectOfType<EquipmentBank>().GetEquipment("0000")));
 
 		if (id == "generateChar")
 			 return GenerateChar();
@@ -45,7 +45,7 @@ public abstract class City : Place {
 		string name = "Smith";
 		int health = 3;
 		int rad = 1;
-		pendingChar = new Character(name, health, rad);
+		pendingChar = new Character(name, health, rad, FindObjectOfType<EquipmentBank>().GetEquipment("0000"));
 
 		return String.Format(GetCityText("generateChar"), name, health, rad);
 	}

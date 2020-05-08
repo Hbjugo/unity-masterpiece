@@ -23,7 +23,7 @@ public class Criss : City {
 		if (id[0] == '0' && id.Length > 4)
 			return ProcessEvent("Triv" + id.Substring(4));
 
-		Debug.LogError("Text not found for " + name);
+		Debug.LogError("Text not found for " + id);
 		return null;
 	}
 

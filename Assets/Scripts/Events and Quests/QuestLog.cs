@@ -127,6 +127,7 @@ public class QuestLog : MonoBehaviour {
 	string AccomplishQuest(string questID) {
 		events.GetPlace().AccomplishQuest(questID);
 		log[questID] = true;
+		Debug.Log("accomplishing " + questID);
 		return questID + "Accomplished";
 	}
 
@@ -136,6 +137,7 @@ public class QuestLog : MonoBehaviour {
 		events.GetPlace().TurnInQuest(questID);
 		log.Remove(questID);
 		Debug.Log("removing " + questID);
+		bank.GiveAward(questID);
 
 		return questID + "TurnIn";
 	}

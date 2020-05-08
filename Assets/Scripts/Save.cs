@@ -9,6 +9,9 @@ public class Save {
 	public int partyCellY;
 	public string currPlace;
 
+	// Current state of the wallet
+	public int money;
+
 	// Current state of the Quest log
 	public Dictionary<string, bool> log = new Dictionary<string, bool>();
 	public string pendingQuestID;
@@ -17,6 +20,7 @@ public class Save {
 	public List<string> charNames = new List<string>();
 	public List<int> charHealth = new List<int>();
 	public List<int> charRadius = new List<int>();
+	public List<string> charEquipments = new List<string>();
 
 	// Current state of the cities
 	public Dictionary<string, List<string>> placesObjQuests = new Dictionary<string, List<string>>();
