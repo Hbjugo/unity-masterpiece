@@ -2,7 +2,7 @@
 using UnityEngine.Tilemaps;
 
 public class BattleStatus : MonoBehaviour {
-	[SerializeField] Player player;
+	[SerializeField] Player player = null;
 
 	public Mover[] movers;
 	int currMover;
@@ -14,13 +14,14 @@ public class BattleStatus : MonoBehaviour {
 	const int WIDTH  = 3;
 
 	GameStatus gs;
+	PartyManager party;
 
 	bool battleResolved = false;
 
 	// Start is called before the first frame update
 	void Start() {
-		Debug.Log(FindObjectsOfType<GameStatus>().Length);
 		gs = FindObjectOfType<GameStatus>();
+		party = FindObjectOfType<PartyManager>();
 		
 		PlacePlayers();
 
@@ -36,8 +37,8 @@ public class BattleStatus : MonoBehaviour {
 	private void PlacePlayers() {
 		Vector3Int pos = new Vector3Int(-WIDTH, -HEIGHT, 0);
 
-		pos = PlaceChara(gs.GetLeader(), pos);
-		foreach (Character chara in gs.GetParty()) {
+		pos = PlaceChara(party.GetLeader(), pos);
+		foreach (Character chara in party.GetParty()) {
 			pos = PlaceChara(chara, pos);
 		}
 	}

@@ -10,7 +10,7 @@ using TMPro;
  * If so, it informs the event handler, else it doesn't do anything
  **/
 public class ClickableText : MonoBehaviour, IPointerClickHandler {
-	[SerializeField] Scrollbar scrollBar;
+	[SerializeField] Scrollbar scrollBar = null;
 	EventHandler eh;
 
 	private void Start() {

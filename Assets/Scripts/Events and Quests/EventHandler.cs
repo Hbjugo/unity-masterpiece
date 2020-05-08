@@ -18,10 +18,10 @@ using TMPro;
  * 
  **/
 public class EventHandler : MonoBehaviour {
-	[SerializeField] Image eventImage;
-	[SerializeField] Image NPCImage;
-	[SerializeField] TextMeshProUGUI eventText;
-	[SerializeField] Text title;
+	[SerializeField] Image eventImage = null;
+	[SerializeField] Image NPCImage = null;
+	[SerializeField] TextMeshProUGUI eventText = null;
+	[SerializeField] Text title = null;
 	EventTexts texts = new EventTexts();
 
 	PartyMap party;

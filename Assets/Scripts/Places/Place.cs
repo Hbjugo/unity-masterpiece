@@ -9,28 +9,20 @@ using UnityEngine;
  **/
 public abstract class Place : MonoBehaviour {
 	// the name of the place
-	[SerializeField] string placeName;
-	[SerializeField] bool isActivated;
+	[SerializeField] string placeName = "";
+	[SerializeField] bool isActivated = false;
 
 	PartyMap party;
 	EventHandler events;
 
 	GameStatus gameStatus;
 
-	List<string> objQuests;
-	List<string> recQuests;
-	bool hasGivenATriv;
+	List<string> objQuests = new List<string>();
+	List<string> recQuests = new List<string>();
 
 	bool hasEntered;
 
-	private void Awake() {
-		objQuests = new List<string>();
-		recQuests = new List<string>();
-
-		hasGivenATriv = false;
-	}
-
-	private void Start() {
+	protected virtual void Start() {
 		events = FindObjectOfType<EventHandler>();
 
 		party = FindObjectOfType<PartyMap>();
@@ -45,11 +37,10 @@ public abstract class Place : MonoBehaviour {
 		Vector3Int currCell = grid.WorldToCell(transform.position);
 		hasEntered = save.partyCellX == currCell.x && save.partyCellY == currCell.y;
 
-		save.placesObjQuests.TryGetValue(placeName, out objQuests);
-		save.placesRecQuests.TryGetValue(placeName, out recQuests);
+		save.placesObjQuests.TryGetValue(GetID(), out objQuests);
+		save.placesRecQuests.TryGetValue(GetID(), out recQuests);
 
-		save.activatedPlaces.TryGetValue(placeName, out isActivated);
-		hasGivenATriv = save.trivGiven.ContainsKey(placeName);
+		save.activatedPlaces.TryGetValue(GetID(), out isActivated);
 		
 		GetComponent<SpriteRenderer>().enabled = isActivated;
 	}
@@ -73,6 +64,12 @@ public abstract class Place : MonoBehaviour {
 
 	public abstract string ProcessEvent(string id);
 
+	public abstract string GetID();
+
+
+	/**
+	 * Some places are not activated by default (for example, places only useful for certain quests) -> this method activates these places when they become needed. 
+	 */
 	public void Activate(bool activation) {
 		isActivated = activation;
 		GetComponent<SpriteRenderer>().enabled = activation;
@@ -82,7 +79,7 @@ public abstract class Place : MonoBehaviour {
 	protected EventHandler GetEventHandler() {
 		return events;
 	}
-	public string GetName() {
+	public virtual string GetName() {
 		return placeName;
 	}
 	protected GameStatus GetGameStatus() {
@@ -102,17 +99,11 @@ public abstract class Place : MonoBehaviour {
 	public List<string> GetRecQuest() {
 		return recQuests;
 	}
-	public bool HasGivenATriv() {
-		return hasGivenATriv;
-	}
-
-	public void SetHasGivenATriv(bool value) {
-		hasGivenATriv = value;
-	}
 
 
 	// Related to quests
 	public void AddQuestObjective(string quest) {
+		Debug.Log(objQuests);
 		objQuests.Add(quest);
 	}
 

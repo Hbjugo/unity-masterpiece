@@ -13,10 +13,9 @@ using TMPro;
  * 
  **/
 public class QuestLog : MonoBehaviour {
-	QuestTexts texts;
 	QuestBank bank;
 
-	const int NB_TRIV_QUESTS = 1;
+	const int NB_TRIV_QUESTS = 3;
 
 	// The last generated quest ID, before it is accepted, must be stored
 	string pendingQuestID;
@@ -29,14 +28,6 @@ public class QuestLog : MonoBehaviour {
 
 	// The log consists of a dictionnary. Each key is the ID of a quest, and the boolean says if the quest is already accomplished or not.
 	Dictionary<string, bool> log = new Dictionary<string, bool>();
-	// The log isn't able to differentiate two same type triv quests (they have the same ID), so it stores the places that have already given a trivial quest 
-	// TODO maybe a same place gould give multiple trivial quests ?
-	Dictionary<string, string> trivGiven = new Dictionary<string, string>();
-
-	// Places for triv quest
-	[SerializeField] MonsterPlace monsters = null;
-	[SerializeField] TileBase[] validMonsters = null;
-
 
 	// Start is called before the first frame update
 	void Start() {
@@ -49,10 +40,7 @@ public class QuestLog : MonoBehaviour {
 
 	public void Load(Save save) {
 		log = save.log;
-		trivGiven = save.trivGiven;
 		pendingQuestID = save.pendingQuestID;
-
-		texts = new QuestTexts();
 	}
 
 	/**
@@ -111,28 +99,17 @@ public class QuestLog : MonoBehaviour {
 	 * Else, it generates a new trivial quest ID.
 	 **/
 	string HandleTriv() {
-		if (!trivGiven.ContainsKey(events.GetPlace().GetName())) {
-			pendingQuestID = Random.Range(1, NB_TRIV_QUESTS + 1).ToString("D4");
+		if (!HasGivenTriv(out pendingQuestID)) {
+			pendingQuestID = events.GetPlace().GetID() + Random.Range(1, NB_TRIV_QUESTS + 1).ToString("D2");
 			return pendingQuestID;
 		}
 		
-		trivGiven.TryGetValue(events.GetPlace().GetName(), out pendingQuestID);
 		bool isCurrTrivAccomplished;
 		log.TryGetValue(pendingQuestID, out isCurrTrivAccomplished);
 		if (isCurrTrivAccomplished)
 			return "TrivAccomplished";
 
 		return "TrivAlreadyGiven";
-	}
-
-
-	public string LogToString() {
-		StringBuilder sb = new StringBuilder();
-		sb.Append("Current quests : \n\n\n");
-		foreach (string id in log.Keys)
-			sb.Append(texts.GetText(id) + "\n\n");
-
-		return sb.ToString();
 	}
 
 
@@ -143,18 +120,14 @@ public class QuestLog : MonoBehaviour {
 		bank.CreateQuest(pendingQuestID);
 		log.Add(pendingQuestID, false);
 
-		// Add the quest to the trivial given if it is a trivial quest
-		if (pendingQuestID[0] == '0')
-			trivGiven.Add(events.GetPlace().GetName(), pendingQuestID);
-
-		return "Good";
+		return pendingQuestID + "Accepted";
 	}
 
 	// Announces to the current place that one of its quests has been accomplished
 	string AccomplishQuest(string questID) {
 		events.GetPlace().AccomplishQuest(questID);
 		log[questID] = true;
-		return "Good";
+		return questID + "Accomplished";
 	}
 
 	// removes the quest from the log and announces to the current place that this quest has been turned in
@@ -162,37 +135,25 @@ public class QuestLog : MonoBehaviour {
 	string TurnInQuest(string questID) {
 		events.GetPlace().TurnInQuest(questID);
 		log.Remove(questID);
-		// if triv, remove it from the map
-		if (questID[0] == '0')
-			trivGiven.Remove(events.GetPlace().GetName());
-		return "Good";
+		Debug.Log("removing " + questID);
+
+		return questID + "TurnIn";
+	}
+
+	bool HasGivenTriv(out string ID) {
+		foreach (string questID in log.Keys) if (questID.Substring(0, 2) == events.GetPlace().GetID()) {
+				ID = questID;
+				return true;
+			}
+		ID = null;
+		return false;
 	}
 
 	public Dictionary<string, bool> GetLog() {
 		return log;
 	}
-	public Dictionary<string, string> GetTrivGiven() {
-		return trivGiven;
-	}
 	public string getPendingQuestID() {
 		return pendingQuestID;
-	}
-
-	private class QuestTexts {
-		Dictionary<string, string> texts;
-
-		public QuestTexts() {
-			texts = new Dictionary<string, string>();
-
-			texts.Add("0001", "The adventurers' Guild has asked you to slay a couple of monsters. They are in a forest, not far from the city where you where given this task.");
-		}
-
-		public string GetText(string name) {
-			string text = "";
-			if (!texts.TryGetValue(name, out text))
-				Debug.LogError("text not found for " + name);
-			return text;
-		}
 	}
 	
 }

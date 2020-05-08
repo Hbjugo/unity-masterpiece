@@ -108,7 +108,8 @@ public class PartyMap : Mover {
 		foreach (Vector3Int c in currNeighbours) {
 			if (TileIsValid(c, invalidTiles)) {
 				map.SetTileFlags(c, TileFlags.LockTransform);
-				map.SetColor(c, Color.yellow);
+				Color neighbColor = new Color(0.8f, 0.7f, 0.1f);
+				map.SetColor(c, neighbColor);
 			}
 		}
 	}

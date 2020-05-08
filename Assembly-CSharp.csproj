@@ -62,15 +62,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\BattlePlace.cs" />
-    <Compile Include="Assets\CharInfobull.cs" />
+    <Compile Include="Assets\CharacterFirer.cs" />
     <Compile Include="Assets\Scripts\Battle\BattleStatus.cs" />
+    <Compile Include="Assets\Scripts\Battle\CharInfobull.cs" />
     <Compile Include="Assets\Scripts\Battle\Enemy.cs" />
     <Compile Include="Assets\Scripts\Battle\Health.cs" />
     <Compile Include="Assets\Scripts\Battle\Mover.cs" />
     <Compile Include="Assets\Scripts\Battle\Player.cs" />
     <Compile Include="Assets\Scripts\Battle\Spawner.cs" />
     <Compile Include="Assets\Scripts\Characters\Character.cs" />
+    <Compile Include="Assets\Scripts\Characters\PartyManager.cs" />
+    <Compile Include="Assets\Scripts\Characters\PartyUI.cs" />
     <Compile Include="Assets\Scripts\ClickableText.cs" />
     <Compile Include="Assets\Scripts\Events and Quests\EventHandler.cs" />
     <Compile Include="Assets\Scripts\Events and Quests\Quest.cs" />
@@ -80,9 +82,12 @@
     <Compile Include="Assets\Scripts\GameStatus.cs" />
     <Compile Include="Assets\Scripts\LoadableObject.cs" />
     <Compile Include="Assets\Scripts\PartyMap.cs" />
+    <Compile Include="Assets\Scripts\Places\BattlePlace.cs" />
     <Compile Include="Assets\Scripts\Places\City.cs" />
+    <Compile Include="Assets\Scripts\Places\Criss.cs" />
     <Compile Include="Assets\Scripts\Places\MonsterPlace.cs" />
     <Compile Include="Assets\Scripts\Places\Place.cs" />
+    <Compile Include="Assets\Scripts\Places\Test.cs" />
     <Compile Include="Assets\Scripts\Save.cs" />
     <Compile Include="Assets\Scripts\SceneLoader.cs" />
     <Compile Include="Assets\Scripts\Texts\CityTexts.cs" />

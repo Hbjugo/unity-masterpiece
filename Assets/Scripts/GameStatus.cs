@@ -14,15 +14,6 @@ using System.IO;
  * 
  **/
 public class GameStatus : MonoBehaviour {
-	// SceneLoader
-	SceneLoader sl;
-
-	// Party
-	[SerializeField] List<Character> party;
-	[SerializeField] Character partyLeader;
-	const int MAX_CHAR_IN_PARTY = 5;
-
-
 	// Singleton object
 	private void Awake() {
 		GameStatus[] gss = FindObjectsOfType<GameStatus>();
@@ -31,14 +22,6 @@ public class GameStatus : MonoBehaviour {
 		}
 
 		DontDestroyOnLoad(gameObject);
-
-		party = new List<Character>();
-		partyLeader = new Character("Arthur", 4, 2);
-
-		//TODO remove this
-		RecruitChar(new Character("Smith", 2, 1));
-		RecruitChar(new Character("Arnold", 5, 3));
-		RecruitChar(new Character("Smith", 5, 2));
 	}
 
 	// Start is called before the first frame update
@@ -55,23 +38,22 @@ public class GameStatus : MonoBehaviour {
 	 * TODO : should save the state of the game, so when the player comes back, the world is restored
 	 * input: battleCoords -> the coordinates of the player on the world, juste before he entered the battle
 	 **/
-	public void EnterBattle() {
+	public void EnterBattle(string sceneName) {
 		SaveState();
-		SceneManager.LoadScene("Battle Scene");
+		SceneManager.LoadScene(sceneName);
 	}
 
 	// TODO handle differently the fact that the battle is won or not (should inform the event handler)
 	public void BattleWon() {
 		SceneManager.LoadScene("World");
-			StartCoroutine("LoadWorld");
-			StartCoroutine("InformEventHandler", "battleWon");
-		
-
-		
+		StartCoroutine("LoadWorld");
+		StartCoroutine("InformEventHandler", "battleWon");
 	}
 
 	public void BattleLost() {
-		Debug.Log("Perdu");
+		SceneManager.LoadScene("World");
+		StartCoroutine("LoadWorld");
+		StartCoroutine("InformEventHandler", "battleLost");
 	}
 
 	IEnumerator InformEventHandler(string eventName) {
@@ -90,17 +72,27 @@ public class GameStatus : MonoBehaviour {
 		save.partyCellY = currCell.y;
 
 		Place currPlace = FindObjectOfType<EventHandler>().GetPlace();
-		save.currPlace = currPlace ? currPlace.GetName() : "";
+		save.currPlace = currPlace ? currPlace.GetID() : "";
 
 		QuestLog log = FindObjectOfType<QuestLog>();
 		save.log = log.GetLog();
-		save.trivGiven = log.GetTrivGiven();
 		save.pendingQuestID = log.getPendingQuestID();
 
+		PartyManager party = FindObjectOfType<PartyManager>();
+		Character leader = party.GetLeader();
+		save.charNames.Add(leader.GetName());
+		save.charHealth.Add(leader.GetHealth());
+		save.charRadius.Add(leader.GetRadius());
+		foreach (Character c in party.GetParty()) {
+			save.charNames.Add(c.GetName());
+			save.charHealth.Add(c.GetHealth());
+			save.charRadius.Add(c.GetRadius());
+		}
+
 		foreach (Place p in FindObjectsOfType<Place>()) {
-			save.placesObjQuests.Add(p.GetName(), p.GetObjQuest());
-			save.placesRecQuests.Add(p.GetName(), p.GetRecQuest());
-			save.activatedPlaces.Add(p.GetName(), p.IsActivated());
+			save.placesObjQuests.Add(p.GetID(), p.GetObjQuest());
+			save.placesRecQuests.Add(p.GetID(), p.GetRecQuest());
+			save.activatedPlaces.Add(p.GetID(), p.IsActivated());
 		}
 
 		BinaryFormatter bf = new BinaryFormatter();
@@ -125,37 +117,16 @@ public class GameStatus : MonoBehaviour {
 
 			FindObjectOfType<QuestLog>().Load(save);
 
+			FindObjectOfType<PartyManager>().Load(save);
+
 			foreach (Place p in FindObjectsOfType<Place>()) {
 				p.Load(save);
-				if (p.GetName() == save.currPlace)
+				if (p.GetID() == save.currPlace)
 					FindObjectOfType<EventHandler>().SetPlace(p);
 			}
 
 
 			Debug.Log("file loaded");
 		}
-	}
-
-	// Party 
-	// TODO maybe add a party manager class ?
-	public void RecruitChar(Character character) {
-		if (party.Count < MAX_CHAR_IN_PARTY)
-			party.Add(character);
-	}
-
-	public void FireChar(Character character) {
-		party.Remove(character);
-	}
-
-	public List<Character> GetParty() {
-		return party;
-	}
-
-	public Character GetLeader() {
-		return partyLeader;
-	}
-
-	public void GetPlaceCell(Place place, out Vector3 cell) {
-		cell = new Vector3();
 	}
 }

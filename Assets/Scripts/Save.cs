@@ -11,8 +11,12 @@ public class Save {
 
 	// Current state of the Quest log
 	public Dictionary<string, bool> log = new Dictionary<string, bool>();
-	public Dictionary<string, string> trivGiven = new Dictionary<string, string>();
 	public string pendingQuestID;
+
+	// Current state of the party
+	public List<string> charNames = new List<string>();
+	public List<int> charHealth = new List<int>();
+	public List<int> charRadius = new List<int>();
 
 	// Current state of the cities
 	public Dictionary<string, List<string>> placesObjQuests = new Dictionary<string, List<string>>();

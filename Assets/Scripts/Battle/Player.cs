@@ -57,6 +57,7 @@ public class Player : Mover {
 		else if (bs.IsItMyTurn(this))
 			DecolorNeighbours();
 
+		// get the cell pointed by the mouse
 		Vector3Int mousePos = MouseGrid();
 
 		if (Input.GetMouseButtonDown(1) && mousePos == currCell)
@@ -82,7 +83,6 @@ public class Player : Mover {
 
 
 			else {
-				// get the cell pointed by the mouse
 
 				// if the mouse is clicked on a neighbour cell
 				if (Input.GetMouseButtonDown(0) && IsNextTo(mousePos, currNeighbours)) {
@@ -95,7 +95,7 @@ public class Player : Mover {
 					else if (!GetPlayer(mousePos)) {
 						bool hasMoved = Move(mousePos, invalidTiles);
 						UpdatePos(mousePos, hasMoved);
-						hasFinished = true;
+						hasFinished = hasMoved;
 					}
 
 				}
