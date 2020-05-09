@@ -4,6 +4,22 @@ using UnityEngine;
 
 public class EquipmentBank : MonoBehaviour {
 	public const int NB_EQUIPMENT = 3;
+
+	private bool[] unlockedEquipment = new bool[NB_EQUIPMENT];
+
+	public void Load(Save save) {
+		unlockedEquipment = save.unlockedEquipment;
+	}
+
+	public bool[] GetUnlockedEquipment() {
+		return unlockedEquipment;
+
+	}
+
+	public void Unlock(string ID) {
+		unlockedEquipment[int.Parse(ID)] = true;
+	}
+
     public Equipment GetEquipment(string ID) {
 		switch (ID) {
 			case "0000":

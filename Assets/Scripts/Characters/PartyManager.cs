@@ -17,6 +17,7 @@ public class PartyManager : MonoBehaviour {
 		party = new List<Character>();
 		partyLeader = new Character("Arthur", 1, 1, new Equipment("0001", 1, 0));
 		Recruit(new Character("Mehdouche", 1, 1, new Equipment("0000", 0, 0)));
+		Recruit(new Character("Smith", 1, 1, new Equipment("0000", 0, 0)));
 	}
 
 	public void Load(Save save) {
@@ -25,7 +26,6 @@ public class PartyManager : MonoBehaviour {
 		partyLeader = null;
 		EquipmentBank bank = FindObjectOfType<EquipmentBank>();
 		partyLeader = new Character(save.charNames[0], save.charHealth[0], save.charRadius[0], bank.GetEquipment(save.charEquipments[0]));
-		Debug.Log(save.charRadius[0]);
 		for (int i = 1; i < save.charNames.Count; ++i)
 			Recruit(new Character(save.charNames[i], save.charHealth[i], save.charRadius[i], bank.GetEquipment(save.charEquipments[i])));
 	}

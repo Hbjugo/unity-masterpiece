@@ -14,7 +14,7 @@ public class PartyUI : MonoBehaviour {
 	PartyMap party;
 
 	bool isActivated;
-	int armoryIndex;
+	int armoryIndex = int.MaxValue;
 
 	private void Awake() {
 		isActivated = false;
@@ -60,9 +60,7 @@ public class PartyUI : MonoBehaviour {
 						else if (i.tag == "Character Icon")
 							i.sprite = Resources.Load<Sprite>("Sprites/NPCs/" + c.GetName());
 						else if (i.tag == "Equipment Icon") {
-							Debug.Log("YOO");
 							foreach (Image im in i.GetComponentsInChildren<Image>()) if (im.tag != "Equipment Icon") {
-									Debug.Log(c.GetEquipment().GetID());
 									im.sprite = Resources.Load<Sprite>("Sprites/Equipments/" + c.GetEquipment().GetID());
 								}
 						}
@@ -86,12 +84,17 @@ public class PartyUI : MonoBehaviour {
 		for (int i = 0; i < EquipmentBank.NB_EQUIPMENT; ++i) {
 			LayoutElement equipment = Instantiate(equipmentPlaceholder, container.transform);
 			string ID = i.ToString("D4");
-			foreach (Image im in equipment.GetComponentsInChildren<Image>()) if (im.tag != "Equipment Icon") 
+			foreach (Image im in equipment.GetComponentsInChildren<Image>()) if (im.tag != "Equipment Icon") {
 					im.sprite = Resources.Load<Sprite>("Sprites/Equipments/" + ID);
+					im.color = bank.GetUnlockedEquipment()[i] ? Color.white : Color.black;
+				}
 			equipment.name = ID;
+			if (!bank.GetUnlockedEquipment()[i])
+				equipment.GetComponent<Button>().enabled = false;
 		}
 		container.transform.SetSiblingIndex(charIndex+1);
 		armoryIndex = armoryIndex < charIndex ? charIndex - 1 : charIndex;
+		Debug.Log(armoryIndex);
 	}
 
 	public void SelectArmor(string armorID) {
@@ -99,6 +102,8 @@ public class PartyUI : MonoBehaviour {
 			partyManager.GetLeader().Equip(bank.GetEquipment(armorID));
 		else
 			partyManager.GetParty()[armoryIndex - 1].Equip(bank.GetEquipment(armorID));
+
+		armoryIndex = int.MaxValue;
 		Switch();
 		Switch();
 	}

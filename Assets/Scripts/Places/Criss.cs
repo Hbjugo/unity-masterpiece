@@ -38,13 +38,21 @@ public class Criss : City {
 			case "0103Accomplished":
 			case "Criss":
 				string s = "You arrived in the great city of Criss. Everything here is charming: there are cute houses on the riverside, the people passing by are all smiling, walking at a slow pace, as if they didn't have anything to care about in the world. It feels good, here. \n\n " +
-					"<color=#cc3300><link=\"inn\">Go to the nearby inn</link></color> \n\n";
+					"<color=#cc3300><link=\"inn\">Go to the nearby inn</link></color> \n\n" +
+					"<color=#cc3300><link=\"market\">Go to the local market place</link></color> \n\n";
 				if (GetObjQuest().Contains("0002"))
 					s += "<color=#cc3300><link=\"quest0002\">Deliver the package as requested</link></color> \n\n";
 				if (GetObjQuest().Contains("0103"))
 					s += "<color=#cc3300><link=\"quest0103\">You begin searching for the pickpocket</link></color> \n\n";
 				s += "<color=#cc3300><link=\"exit\">Leave the city</link></color>";
 				return s;
+
+			case "inn":
+				return "You enter the inn. A poet is declaiming verses. You find an agent of the adventurers' Guild, who would surely be happy to give you a job. \n\n" +
+					"There are also a few adventurers sitting around the inn. One of them doesn't seem to be in a group. Maybe you could recruit him for your party.\n\n" +
+					"<color=#cc3300><link=\"questTriv\">Go see the agent</link></color> \n\n" +
+					"<color=#cc3300><link=\"generateChar\">Propose to the adventurer to join your party </link></color> \n\n" +
+					"<color=#cc3300><link=\"city\">Go back to the city</link></color>";
 
 			case "0002AlreadyGiven":
 				return "You arrive at the address given by the agent. You knock at the door of a large mansion. There, a domestic opens the door. He looks at you, and asks you what business you have with his master.\n\n" +

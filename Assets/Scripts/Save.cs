@@ -16,6 +16,9 @@ public class Save {
 	public Dictionary<string, bool> log = new Dictionary<string, bool>();
 	public string pendingQuestID;
 
+	// Current state of the progression (how much has been unlocked)
+	public bool[] unlockedEquipment;
+
 	// Current state of the party
 	public List<string> charNames = new List<string>();
 	public List<int> charHealth = new List<int>();

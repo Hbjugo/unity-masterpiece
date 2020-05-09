@@ -25,11 +25,20 @@ public class Wallet : MonoBehaviour {
 		return true;
 	}
 
+	public void LoseMoney(int amount) {
+		money -= amount;
+		if (money < 0)
+			money = 0;
+
+		moneyText.text = money.ToString();
+	}
+
 	public int GetMoney() {
 		return money;
 	}
 
 	public void Load(Save save) {
 		money = save.money;
+		moneyText.text = money.ToString();
 	}
 }

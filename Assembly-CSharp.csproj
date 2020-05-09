@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="Assets\BattleOrderUI.cs" />
     <Compile Include="Assets\ChooseArmor.cs" />
+    <Compile Include="Assets\DeepForest.cs" />
     <Compile Include="Assets\Infobull.cs" />
     <Compile Include="Assets\Scripts\ArmorDisplayer.cs" />
     <Compile Include="Assets\Scripts\Battle\BattleStatus.cs" />

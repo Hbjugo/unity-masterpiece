@@ -9,7 +9,6 @@ using System.IO;
 /**
  * The current status of the game
  * All data for the game should be stored here
- * TODO : add datas that are not here to be able to save the game and enter battles and stuff
  * 
  * 
  **/
@@ -27,6 +26,9 @@ public class GameStatus : MonoBehaviour {
 	// Start is called before the first frame update
 	void Start() {
 		Grid grid = FindObjectOfType<Grid>();
+
+		FindObjectOfType<EquipmentBank>().Unlock("0000");
+		FindObjectOfType<EquipmentBank>().Unlock("0001");
 
 		SaveState();
 		StartCoroutine("LoadWorld");
@@ -80,6 +82,9 @@ public class GameStatus : MonoBehaviour {
 		save.log = log.GetLog();
 		save.pendingQuestID = log.getPendingQuestID();
 
+		EquipmentBank bank = FindObjectOfType<EquipmentBank>();
+		save.unlockedEquipment = bank.GetUnlockedEquipment();
+
 		PartyManager party = FindObjectOfType<PartyManager>();
 		Character leader = party.GetLeader();
 		save.charNames.Add(leader.GetName());
@@ -120,6 +125,8 @@ public class GameStatus : MonoBehaviour {
 			FindObjectOfType<PartyMap>().Load(save);
 
 			FindObjectOfType<QuestLog>().Load(save);
+
+			FindObjectOfType<EquipmentBank>().Load(save);
 
 			FindObjectOfType<PartyManager>().Load(save);
 

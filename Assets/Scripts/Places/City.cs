@@ -59,12 +59,24 @@ public abstract class City : Place {
 	}
 
 	public string GetCityText(string name) {
+		Wallet wallet = FindObjectOfType<Wallet>();
+		EquipmentBank bank = FindObjectOfType<EquipmentBank>();
 		switch (name) {
-			case "inn":
-				return "You enter the inn. Inside, a few townmen are drinking beers, in silence. You find an agent of the adventurer guild, who would be happy to give you a job. \n\n" +
-					"<color=#cc3300><link=\"questTriv\">Go see the agent</link></color> \n\n" +
-					"<color=#cc3300><link=\"generateChar\">Propose to an adventurer to join your party </link></color> \n\n" +
+			
+
+			case "market":
+				return "You arrive on the market place. Here, numerous merchants are selling things of all sort, including all the material for adventurers like you. Surely you could find what you're looking for.\n\n" +
+					(!bank.GetUnlockedEquipment()[1] ? "<color=#cc3300><link=\"buyEquipment0001\">Buy an armor (health = 1, radius = 2) for 50 golds</link></color>\n\n" : "") +
 					"<color=#cc3300><link=\"city\">Go back to the city</link></color>";
+
+			case "buyEquipment0001":
+				if (wallet.SpendMoney(50)) {
+					bank.Unlock("0001");
+					return "You successfully bought a new armor.\n\n" +
+						"<color=#cc3300><link=\"market\">Go back to the market</link></color>";
+				}
+				return "You don't have enough money. Come back when you have more! \n\n" +
+					"<color=#cc3300><link=\"market\">Go back to the market</link></color>";
 
 			case "TrivAccepted":
 				return "\"Thanks for your help. Please do as fast as you can. And, of course, the Guild will hear about your exploits. \n\n" +
@@ -93,14 +105,18 @@ public abstract class City : Place {
 					"You both are out of breath. He does not look afraid at all. \"I don't do this for the sole sake of robbing people, you know. I have a sister and a child to feed. I won't let you bring me to the guards. I'd rather kill you here and now\". He gets two daggers out of his boots. It seems like he's not bluffing. \n\n" +
 					"<color=#cc3300><link=\"battleThief\">You're clearly not going to let him do as he wants.</link></color>";
 			case "battleWon":
-				return "The thief is on the ground, at your mercy. His eyes are getting wet, just like his pants.\n\n" +
+				string s = "The thief is on the ground, at your mercy. His eyes are getting wet, just like his pants.\n\n" +
 					"\"Please sir... I have a family! You can't kill me! My sister... Her child... They won't be able to survive without me! I will find a real job, I promise, but please, please, don't kill me !\"\n\n" +
-					"<color=#cc3300><link=\"questAccomplished>\"No mercy for the scum\", you say, before dealing the final blow the him</link></color> \n\n<color=#cc3300><link=\"pickpocketted>\"Just get the fuck outta here before I change my mind\"\n\n</link></color>" +
-					"<color=#cc3300><link=\"newFriend\">\"Here\", you say as you throw him a purse full of gold. \"This is the reward for your head. Don't make me regret this.\"</link></color>";
+					"<color=#cc3300><link=\"questAccomplished>\"No mercy for the scum\", you say, before dealing the final blow the him</link></color> \n\n<color=#cc3300><link=\"pickpocketted>\"Just get the fuck outta here before I change my mind\"\n\n</link></color>";
+				if (wallet.GetMoney() > 40)
+					s += "<color=#cc3300><link=\"newFriend\">\"Here\", you say as you throw him a purse full of gold. \"This is the reward for your head. Don't make me regret this.\"</link></color>";
+				return s;
 			case "pickpocketted":
+				wallet.LoseMoney(15);
 				return "He thanks you greatly, swearing that he will never be seen doing bad deeds again. But you've hardly turned your back, that you realize your purse has disappeared. He must have gotten away with it. At least, you've damaged him enough that he won't be able to bother the merchants for a long time.\n\n" +
 					"<color=#cc3300><link=\"questAccomplished>You make your way back to the city</link></color>";
 			case "newFriend":
+				wallet.LoseMoney(40);
 				return "His eyes widen. His gaze alternates between you and the purse. \"I don't have enough words to thank you.\" If his eyes were wet, now they are flowing with tears. He jumps to your feet. \n\n\"Take me with you ! Please ! I know how to fight, and this way, I will never have to be a thief ever again !\" You look at him, considering his offer.\n\n" +
 					"He is a thief with great speed (radius = 4), but can not sustain many hits (hp = 2).\n\n" +
 					"<color=#cc3300><link=\"recruitThief>You accept his request</link></color> \n\n<color=#cc3300><link=\"questAccomplished>You refuse, and go back to the city</link></color>";
