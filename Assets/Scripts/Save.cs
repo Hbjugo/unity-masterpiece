@@ -18,6 +18,8 @@ public class Save {
 
 	// Current state of the progression (how much has been unlocked)
 	public bool[] unlockedEquipment;
+	public List<string> waitingChars = new List<string>();
+	public bool[] sideActivated;
 
 	// Current state of the party
 	public List<string> charNames = new List<string>();

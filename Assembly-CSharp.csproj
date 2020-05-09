@@ -76,6 +76,7 @@
     <Compile Include="Assets\Scripts\Battle\Spawner.cs" />
     <Compile Include="Assets\Scripts\CharacterFirer.cs" />
     <Compile Include="Assets\Scripts\Characters\Character.cs" />
+    <Compile Include="Assets\Scripts\Characters\CharacterBank.cs" />
     <Compile Include="Assets\Scripts\Characters\PartyManager.cs" />
     <Compile Include="Assets\Scripts\Characters\PartyUI.cs" />
     <Compile Include="Assets\Scripts\ClickableText.cs" />
@@ -92,9 +93,9 @@
     <Compile Include="Assets\Scripts\Places\BattlePlace.cs" />
     <Compile Include="Assets\Scripts\Places\City.cs" />
     <Compile Include="Assets\Scripts\Places\Criss.cs" />
+    <Compile Include="Assets\Scripts\Places\Longport.cs" />
     <Compile Include="Assets\Scripts\Places\MonsterPlace.cs" />
     <Compile Include="Assets\Scripts\Places\Place.cs" />
-    <Compile Include="Assets\Scripts\Places\Test.cs" />
     <Compile Include="Assets\Scripts\Save.cs" />
     <Compile Include="Assets\Scripts\SceneLoader.cs" />
     <Compile Include="Assets\Scripts\Texts\CityTexts.cs" />

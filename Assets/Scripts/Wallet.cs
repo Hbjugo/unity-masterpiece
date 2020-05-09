@@ -5,7 +5,7 @@ using TMPro;
 
 public class Wallet : MonoBehaviour {
 	[SerializeField] TextMeshProUGUI moneyText = null;
-	int money = 0;
+	int money = 100;
 
 	private void Start() {
 		moneyText.text = money.ToString();

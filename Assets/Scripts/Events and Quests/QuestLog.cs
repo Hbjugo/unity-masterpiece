@@ -15,8 +15,6 @@ using TMPro;
 public class QuestLog : MonoBehaviour {
 	QuestBank bank;
 
-	const int NB_TRIV_QUESTS = 3;
-
 	// The last generated quest ID, before it is accepted, must be stored
 	string pendingQuestID;
 	
@@ -100,7 +98,7 @@ public class QuestLog : MonoBehaviour {
 	 **/
 	string HandleTriv() {
 		if (!HasGivenTriv(out pendingQuestID)) {
-			pendingQuestID = events.GetPlace().GetID() + Random.Range(1, NB_TRIV_QUESTS + 1).ToString("D2");
+			pendingQuestID = events.GetPlace().GetID() + Random.Range(1, QuestBank.NB_TRIV + 1).ToString("D2");
 			return pendingQuestID;
 		}
 		

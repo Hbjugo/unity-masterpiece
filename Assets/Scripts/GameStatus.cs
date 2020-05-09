@@ -28,7 +28,6 @@ public class GameStatus : MonoBehaviour {
 		Grid grid = FindObjectOfType<Grid>();
 
 		FindObjectOfType<EquipmentBank>().Unlock("0000");
-		FindObjectOfType<EquipmentBank>().Unlock("0001");
 
 		SaveState();
 		StartCoroutine("LoadWorld");
@@ -82,8 +81,14 @@ public class GameStatus : MonoBehaviour {
 		save.log = log.GetLog();
 		save.pendingQuestID = log.getPendingQuestID();
 
-		EquipmentBank bank = FindObjectOfType<EquipmentBank>();
-		save.unlockedEquipment = bank.GetUnlockedEquipment();
+		EquipmentBank equipBank = FindObjectOfType<EquipmentBank>();
+		save.unlockedEquipment = equipBank.GetUnlockedEquipment();
+
+		CharacterBank charBank = FindObjectOfType<CharacterBank>();
+		save.waitingChars = charBank.GetWaitingChars();
+
+		QuestBank questBank = FindObjectOfType<QuestBank>();
+		save.sideActivated = questBank.GetSideActivated();
 
 		PartyManager party = FindObjectOfType<PartyManager>();
 		Character leader = party.GetLeader();
@@ -127,6 +132,10 @@ public class GameStatus : MonoBehaviour {
 			FindObjectOfType<QuestLog>().Load(save);
 
 			FindObjectOfType<EquipmentBank>().Load(save);
+
+			FindObjectOfType<CharacterBank>().Load(save);
+
+			FindObjectOfType<QuestBank>().Load(save);
 
 			FindObjectOfType<PartyManager>().Load(save);
 

@@ -59,8 +59,8 @@ public class QuestLogUI : MonoBehaviour {
 			texts.Add("0002", "A client of the adventurers' Guild has asked for a package to be delivered in the city of Criss. It is southwest from the city of Test, where you were given this task.");
 			texts.Add("0102", "A client of the adventurers' Guild has asked for a package to be delivered in the city of Test. It is northeast from the city of Criss, where you were given this task.");
 
-			texts.Add("0003", "The merchants' Guild has hired you to get rid of a thief in the city of Test. Make sure he will never rob them again and they will reward you.");
-			texts.Add("0103", "The merchants' Guild has hired you to get rid of a thief in the city of Criss. Make sure he will never rob them again and they will reward you.");
+			texts.Add("2000", "The Merchants' Guild has hired you to get rid of a thief in the city of Longport. Make sure he will never rob them again and they will reward you. \n\n" +
+				"According to the Adventurers' Guild agent who gave you the job, you should look in the marketplace to find your target.");
 		}
 
 		public string GetText(string name) {

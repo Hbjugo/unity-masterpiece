@@ -33,11 +33,15 @@ public class Criss : City {
 
 
 	public string GetText(string name) {
+		Wallet wallet = FindObjectOfType<Wallet>();
+		EquipmentBank bank = FindObjectOfType<EquipmentBank>();
+
 		switch (name) {
 			case "0002TurnIn":
 			case "0103Accomplished":
 			case "Criss":
-				string s = "You arrived in the great city of Criss. Everything here is charming: there are cute houses on the riverside, the people passing by are all smiling, walking at a slow pace, as if they didn't have anything to care about in the world. It feels good, here. \n\n " +
+				string s = "You arrived in the great city of Criss. Everything here is charming: there are cute houses on the riverside, the people passing by are all smiling, walking at a slow pace, as if they didn't have anything to care about in the world. It feels good, here. \n\n" +
+					"The city is located on the left side of Longlake, a river running from the eastern " +
 					"<color=#cc3300><link=\"inn\">Go to the nearby inn</link></color> \n\n" +
 					"<color=#cc3300><link=\"market\">Go to the local market place</link></color> \n\n";
 				if (GetObjQuest().Contains("0002"))
@@ -48,10 +52,16 @@ public class Criss : City {
 				return s;
 
 			case "inn":
-				return "You enter the inn. A poet is declaiming verses. You find an agent of the adventurers' Guild, who would surely be happy to give you a job. \n\n" +
-					"There are also a few adventurers sitting around the inn. One of them doesn't seem to be in a group. Maybe you could recruit him for your party.\n\n" +
+				return "You enter the inn. A poet is declaiming verses. A few people are around him, listening to his words. The rest of the folks drink cheerily, going forth and between each table.\n\n" +
+					"An agent of the adventurers' Guild is talking with an adventurer. He looks like he is trying to give him a new job, but the other seems to be only wanting to party. Surely he just came back from a successful mission and is willing to spend his newfound money.\n\n" +
+					"If you talk to the agent, you will be sure to find a job. You could also try to recruit the adventurer for your party.\n\n" +
 					"<color=#cc3300><link=\"questTriv\">Go see the agent</link></color> \n\n" +
 					"<color=#cc3300><link=\"generateChar\">Propose to the adventurer to join your party </link></color> \n\n" +
+					"<color=#cc3300><link=\"city\">Go back to the city</link></color>";
+
+			case "market":
+				return "You arrive on the market place. It is located on the side of Longlake. Here, numerous merchants are selling things of all sort, including all the material for adventurers like you. Surely you could find what you're looking for.\n\n" +
+					(!bank.GetUnlockedEquipment()[1] ? "<color=#cc3300><link=\"buyEquipment0001\">Buy an armor (health = 1, radius = 2) for 50 golds</link></color>\n\n" : "") +
 					"<color=#cc3300><link=\"city\">Go back to the city</link></color>";
 
 			case "0002AlreadyGiven":

@@ -4,19 +4,27 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class QuestBank : MonoBehaviour {
+	public const int NB_TRIV = 2;
+	public const int NB_SIDE = 1;
+
+	bool[] sideActivated= new bool[NB_SIDE];
+
     public void CreateQuest(string ID) {
-		switch (ID.Substring(2)) {
+		if (ID[0] == '0') switch (ID.Substring(2)) {
 			case "01":
 				CreateMonsterHunt(ID.Substring(0, 2));
 				break;
 			case "02":
 				CreateDeliveringQuestToOtherCity(ID.Substring(0, 2));
 				break;
-			case "03":
-				CreateFindTheThiefQuest(ID.Substring(0, 2));
-				break;
 			default:  break;
 		}
+		else switch (ID) {
+				case "2000":
+					CreateFindTheThiefQuest();
+					break;
+			}
+
 	}
 
 	public void GiveAward(string ID) {
@@ -34,6 +42,7 @@ public class QuestBank : MonoBehaviour {
 		}
 	}
 
+	// 0*00
 	private void CreateMonsterHunt(string placeID) {
 		MonsterPlace monsterHunt = null;
 		foreach (MonsterPlace p in FindObjectsOfType<MonsterPlace>()) if (p.GetCityID() == placeID) monsterHunt = p;
@@ -44,6 +53,7 @@ public class QuestBank : MonoBehaviour {
 		ActivateQuest(placeID + "01", FindPlace(placeID), monsterHunt);
 	}
 
+	// 0*01
 	private void CreateDeliveringQuestToOtherCity(string placeID) {
 		string otherID;
 		switch (placeID) {
@@ -59,10 +69,10 @@ public class QuestBank : MonoBehaviour {
 		ActivateQuest(placeID + "02", objAndRec, objAndRec);
 	}
 
-	private void CreateFindTheThiefQuest(string placeID) {
-		Debug.Log(placeID);
-		Place objAndRec = FindPlace(placeID);
-		ActivateQuest(placeID + "03", objAndRec, objAndRec);
+	// 2000
+	private void CreateFindTheThiefQuest() {
+		Place longport = FindPlace("00");
+		ActivateQuest("2000", longport, longport);
 	}
 
 	private void AwardMonsterHunt() {
@@ -75,7 +85,7 @@ public class QuestBank : MonoBehaviour {
 	}
 
 	private void AwardThief() {
-		FindObjectOfType<Wallet>().AddMoney(40);
+		FindObjectOfType<Wallet>().AddMoney(100);
 	}
 
 	private Place FindPlace(string placeID) {
@@ -88,6 +98,9 @@ public class QuestBank : MonoBehaviour {
 	}
 
 	private void ActivateQuest(string ID, Place receiverPlace, params Place[] objectivesPlaces) {
+		if (ID[0] == '2')
+			sideActivated[int.Parse(ID.Substring(1))] = true;
+
 		// announce to its receiver's place it should be able to handle this quest
 		receiverPlace.AddQuestReceiver(ID);
 
@@ -96,5 +109,15 @@ public class QuestBank : MonoBehaviour {
 		foreach (Place place in objectivesPlaces)
 			place.AddQuestObjective(ID);
 		
+	}
+
+	public bool[] GetSideActivated() {
+		return sideActivated;
+	}
+	public bool IsSideQuestActivated(string ID) {
+		return sideActivated[int.Parse(ID.Substring(1))];
+	}
+	public void Load(Save save) {
+		sideActivated = save.sideActivated;
 	}
 }

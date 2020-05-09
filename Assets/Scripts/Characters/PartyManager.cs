@@ -5,6 +5,7 @@ using UnityEngine;
 public class PartyManager : MonoBehaviour {
 	const int MAX_CHAR = 5;
 	List<Character> party;
+	CharacterBank charBank;
 	Character partyLeader;
 
 	private void Awake() {
@@ -14,10 +15,9 @@ public class PartyManager : MonoBehaviour {
 
 		DontDestroyOnLoad(gameObject);
 
+		charBank = FindObjectOfType<CharacterBank>();
 		party = new List<Character>();
-		partyLeader = new Character("Arthur", 1, 1, new Equipment("0001", 1, 0));
-		Recruit(new Character("Mehdouche", 1, 1, new Equipment("0000", 0, 0)));
-		Recruit(new Character("Smith", 1, 1, new Equipment("0000", 0, 0)));
+		partyLeader = charBank.GetCharacter("Arthur");
 	}
 
 	public void Load(Save save) {
@@ -38,6 +38,10 @@ public class PartyManager : MonoBehaviour {
 	}
 
 	public void Fire(Character chara) {
+		charBank.AddWaitingChar(chara);
+		party.Remove(chara);
+	}
+	public void Kill(Character chara) {
 		party.Remove(chara);
 	}
 

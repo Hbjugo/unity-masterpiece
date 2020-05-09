@@ -16,7 +16,7 @@ public class PartyMap : Mover {
 	HashSet<Vector3Int> currNeighbours;
 	int movementRad = 1;
 
-	Vector3Int currCell;
+	Vector3Int currCell = new Vector3Int(-12, 0, 0);
 
 	bool busy = false;
 
@@ -67,15 +67,6 @@ public class PartyMap : Mover {
 		UpdatePos(currCell, hasMoved);
 	} 
 
-
-	/**
-	 * Gets the current cell pointed by the mouse
-	 * returns: the coordinates of the cell the mouse is in
-	 **/
-	Vector3Int MouseGrid() {
-		Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		return grid.WorldToCell(mousePos);
-	}
 
 	/**
 	 * Update the position of the player
