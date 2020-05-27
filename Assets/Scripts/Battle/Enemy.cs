@@ -91,7 +91,7 @@ public class Enemy : Mover {
 		Vector3Int targ = new Vector3Int();
 		while (queue.Count != 0 && !targetFound) {
 			Vector3Int currExpl = queue.Dequeue();
-			foreach (Vector3Int n in ComputeNeighbours(currExpl, movementRad)) {
+			foreach (Vector3Int n in ComputeNeighbours(currExpl, movementRad, invalidTiles)) {
 				if (!explored.ContainsKey(n) && TileIsValid(n, invalidTiles) && !GetEnemy(n)) {
 					queue.Enqueue(n);
 					explored.Add(n, currExpl);

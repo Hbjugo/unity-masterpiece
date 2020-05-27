@@ -13,6 +13,8 @@ using System.IO;
  * 
  **/
 public class GameStatus : MonoBehaviour {
+	bool hasStarted = false;
+
 	// Singleton object
 	private void Awake() {
 		GameStatus[] gss = FindObjectsOfType<GameStatus>();
@@ -28,45 +30,43 @@ public class GameStatus : MonoBehaviour {
 		Grid grid = FindObjectOfType<Grid>();
 
 		FindObjectOfType<EquipmentBank>().Unlock("0000");
+	}
 
-		SaveState();
-		StartCoroutine("LoadWorld");
+	private void Update() {
+		if (!hasStarted) {
+			SaveState("");
+			StartCoroutine("LoadWorld", "");
+
+			hasStarted = true;
+		}
 	}
 
 	/**
 	 * Called at the beginning of a battle
 	 * Just call the scene loader to change the scene
-	 * TODO : should save the state of the game, so when the player comes back, the world is restored
 	 * input: battleCoords -> the coordinates of the player on the world, juste before he entered the battle
 	 **/
 	public void EnterBattle(string sceneName) {
-		SaveState();
+		string eventName = sceneName.Replace(" ", "");
+		SaveState(Char.ToLowerInvariant(eventName[0]) + eventName.Substring(1));
 		SceneManager.LoadScene(sceneName);
 	}
 
 	// TODO handle differently the fact that the battle is won or not (should inform the event handler)
 	public void BattleWon() {
 		SceneManager.LoadScene("World");
-		StartCoroutine("LoadWorld");
-		StartCoroutine("InformEventHandler", "battleWon");
+		StartCoroutine("LoadWorld", "Won");
 	}
 
 	public void BattleLost() {
 		SceneManager.LoadScene("World");
-		StartCoroutine("LoadWorld");
-		StartCoroutine("InformEventHandler", "battleLost");
+		StartCoroutine("LoadWorld", "Lost");
 	}
 
-	IEnumerator InformEventHandler(string eventName) {
-		while (SceneManager.GetActiveScene().name != "World")
-			yield return null;
-
-		if (SceneManager.GetActiveScene().name == "World")
-			FindObjectOfType<EventHandler>().ChangeEvent(eventName);
-	}
-
-	private void SaveState() {
+	private void SaveState(string eventName) {
 		Save save = new Save();
+
+		save.currEvent = eventName;
 
 		Vector3Int currCell = FindObjectOfType<PartyMap>().GetCurrCell();
 		save.partyCellX = currCell.x;
@@ -92,16 +92,13 @@ public class GameStatus : MonoBehaviour {
 
 		PartyManager party = FindObjectOfType<PartyManager>();
 		Character leader = party.GetLeader();
-		save.charNames.Add(leader.GetName());
-		save.charHealth.Add(leader.GetBaseHealth());
-		save.charRadius.Add(leader.GetBaseRadius());
+		save.party.Add(leader.GetName());
 		save.charEquipments.Add(leader.GetEquipment().GetID());
 		foreach (Character c in party.GetParty()) {
-			save.charNames.Add(c.GetName());
-			save.charHealth.Add(c.GetBaseHealth());
-			save.charRadius.Add(c.GetBaseRadius());
+			save.party.Add(c.GetName());
 			save.charEquipments.Add(c.GetEquipment().GetID());
 		}
+		
 
 		foreach (Place p in FindObjectsOfType<Place>()) {
 			save.placesObjQuests.Add(p.GetID(), p.GetObjQuest());
@@ -117,7 +114,7 @@ public class GameStatus : MonoBehaviour {
 		Debug.Log("file saved");
 	}
 
-	IEnumerator LoadWorld() {
+	IEnumerator LoadWorld(string eventName) {
 		while (SceneManager.GetActiveScene().name != "World")
 			yield return null;
 
@@ -147,6 +144,8 @@ public class GameStatus : MonoBehaviour {
 					FindObjectOfType<EventHandler>().SetPlace(p);
 			}
 
+			if (eventName != "")
+				FindObjectOfType<EventHandler>().ChangeEvent(save.currEvent + eventName);
 
 			Debug.Log("file loaded");
 		}

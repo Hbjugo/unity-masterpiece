@@ -20,9 +20,10 @@ public class Longport : City {
 		mehdouche = bank.GetCharacter("Mehdouche");
 		bank.AddWaitingChar(smith);
 	}
+
 	public override string ProcessEvent(string id) {
-		if (id == "battleThief") {
-			FindObjectOfType<GameStatus>().EnterBattle("City Battle");
+		if (id == "thiefBattle") {
+			FindObjectOfType<GameStatus>().EnterBattle("Thief Battle");
 			return "";
 		}
 
@@ -51,29 +52,31 @@ public class Longport : City {
 		CharacterBank charBank = FindObjectOfType<CharacterBank>();
 		QuestBank questBank = FindObjectOfType<QuestBank>();
 		PartyManager party = FindObjectOfType<PartyManager>();
+		QuestLog log = FindObjectOfType<QuestLog>();
 
 		switch (name) {
 			case "0102TurnIn":
 			case "2000Accomplished":
+			case "2000TurnIn":
 			case "Longport":
 				string s = "You arrived in the great city of Longport. It is one of the main city of the Known World. From what you've gathered, it is run by merchants. They have the grip on the biggest port of the Longlake, and use it to assess their power on all the villages surrounding the lake. \n\n" +
 					"The city may be all rich and powerful, but the people don't seem really happy here. They all go by quickly, not giving you or anyone of your group a single look. Coming from the main gate, you and your party begin to wander through the streets. \n\n" +
 					"You stop a passer to ask him directions. He's a sailor, working for the Merchants' Guild. He seems busy, and asks you not to take too much of his time.\n\n" +
 					"<color=#cc3300><link=\"inn\">Ask the direction to the inn</link></color> \n\n" +
-					"<color=#cc3300><link=\"market\">Ask the direction to the local market place</link></color> \n\n"; ;
+					"<color=#cc3300><link=\"market\">Ask the direction to the local market place</link></color> \n\n";
 				if (GetObjQuest().Contains("0102"))
 					s += "<color=#cc3300><link=\"quest0102\">Ask the direction to the address where you are supposed to deliver the package.</link></color> \n\n";
-				s += "<color=#cc3300><link=\"exit\">Leave the city</link></color>";
+				s += "<color=#cc3300><link=\"merchantsHQ\">Ask the direction to the Merchants' Guild Headquarters</link></color> \n\n" +
+					"<color=#cc3300><link=\"exit\">Leave the city</link></color>";
 				return s;
 
 			case "market":
-				string sMark = "The market is located next to the harbour, the busiest place of the city. Many of the seafarers trade their goods to the merchants, who can then sell them on the market.\n\n" +
+				return "The market is located next to the harbour, the busiest place of the city. Many of the seafarers trade their goods to the merchants, who can then sell them on the market.\n\n" +
 					"You are overwhelmed by the noise of the market. Everywhere, people are screaming, trying to get the attention of people passing by and to get them to buy their products. As Longport has the biggest harbour of the region, the market is appropriately sized. You can't see the end of the market. \n\n" +
-					"You give the rest of your party a place and an hour to meet, before beginning your stroll. You should be able to find everything an adventurer needs, here.\n\n";
-				sMark += (equipBank.GetUnlockedEquipment()[1]) ? "<color=grey>Buy an armor (health = 1, radius = 2) for 50 golds (you've already bought it)</color>" : "<color=#cc3300><link=\"buyEquipment0001\">Buy an armor (health = 1, radius = 2) for 50 golds</link></color>\n\n";
-				if (GetObjQuest().Contains("2000"))
-					sMark += "<color=#cc3300><link=\"quest2000\">You begin to search for the pickpocket</link></color> \n\n";
-				return sMark;
+					"You give the rest of your party a place and an hour to meet, before beginning your stroll. You should be able to find everything an adventurer needs, here.\n\n" +
+					(equipBank.GetUnlockedEquipment()[1] ? "<color=#858585>Buy an armor (health = 1, radius = 2) for 50 golds (you've already bought it)</color>" : "<color=#cc3300><link=\"buyEquipment0001\">Buy an armor (health = 1, radius = 2) for 50 golds</link></color>\n\n") +
+					(GetObjQuest().Contains("2000") ? "<color=#cc3300><link=\"quest2000\">You begin to search for the pickpocket</link></color> \n\n" : "") +
+					"<color=#cc3300><link=\"city\">Go back to the city</link></color>";
 
 			case "buyEquipment0001":
 				if (wallet.SpendMoney(50)) {
@@ -113,13 +116,25 @@ public class Longport : City {
 					"When you finally make your proposal, he accepts without any hesitation. \"I'm still willing to go with you. Please, just give me enough time to gather my things and to say goodbye to my sister, and I'll be on my way with you!\"\n\n" +
 					"<color=#cc3300><link=\"inn\">You accept his request and go back to the inn.</link></color>";
 
+			case "merchantsHQ":
+				return "You arrive at the Headquarter of the Merchants' Guild. It is the tallest building of the town, located just next to the port. There is a constant flux of people entering and leaving the place, running to some unattended business they have. You walk through the door. \n\n" +
+					"Inside, a secretary asks what is it you are doing here.\n\n" +
+					(GetRecQuest().Contains("2000") && log.GetLog()["2000"] ? "<color=#cc3300><link=\"quest2000\">You say you are here for the reward promised by the Guild for stopping the pickpocket</link></color>\n\n" : "") +
+					"<color=#cc3300><link=\"city\">You inform her that you have no business here. She looks rather annoyed that you wasted three minutes of her life, and asks you to leave.</link></color>";
+
+			case "2000AlreadyAccomplished":
+				return "She looks at you with a bit of suspicion. Apparently, nobody in this city seems to trust your capacities. She asks you to wait here, then leaves through a door behind her desk. Three minutes later, she comes back, with the messenger you had seen with the Adventurers' agent back in the inn. \n\n" +
+					"\"My name is Lona, I work for the Merchants' Guild. Is it true you've rid us of that thief who eluded all our guards ?\" " +
+					(party.GetParty().Exists(chara => chara.GetName() == "Mehdouche") ? "She takes a long look at Mehdouche, as if she knew he was the one who had caused her Guild so much trouble. But she takes her attention back to you, without mentionning anything about your companion.\n\n" : "\n\n") +
+					"\"Here is your reward. Our Guild is grateful for your services. I'm sure that if we ever need some adventurers help in the future, we will call for you.\"" +
+					"<color=#cc3300><link=\"questTurnIn\">You take the reward and make your way back to the city.</link></color>";
 
 			// Quests
 			case "0102AlreadyGiven":
 				return "You arrive at the address given by the agent. You knock at the door of a large mansion. There, a domestic opens the door. He looks at you, and asks you what business you have with his master.\n\n" +
 					"<color=#cc3300><link=\"questAccomplished\">You explain why you've come and hand him the package</link></color>";
 			case "0102Accomplished":
-				return "The man takes the object, tells you to wait a minute and leaves. After a short moment, he comes back with your award. \n\n" +
+				return "The man takes the object, tells you to wait a minute and leaves. After a short moment, he comes back with your reward. \n\n" +
 					"<color=#cc3300><link=\"questTurnIn\">You thank him and go back to the city</link></color>";
 
 			
@@ -131,19 +146,20 @@ public class Longport : City {
 					+ "\"We've had some reports that a group of icabres has established their lair near the city. Alone, they pose no threats, but a group could harm townfolks and villagers alike. That's bad for the merchant's business, so they asked us to send someone. If you would wipe them for us, we would pay you 50 golds\" \n\n" +
 					"<color=#cc3300><link=\"questAccepted\">Accept the mission</link></color> \n\n<color=#cc3300><link=\"inn\">Decline the mission</link></color>";
 			case ("0001Accepted"):
-				return "\"I will be waiting for you here. Please be quick about it. The Merchant's Guild is generous, but they don't like it when business takes too much time. You will find the lair southeast of here. Follow the south coast when you exit the city, you should find it pretty quickly.\" \n\n" +
+				return "\"I will be waiting for you here. Please be quick about it. The Merchant's Guild is generous, but they don't like it when business takes too much time. You will find the lair south of here. Follow the south coast when you exit the city, you should find it pretty quickly.\" \n\n" +
 					"<color=#cc3300><link=\"inn\">You greet the agent and go back to the inn</link></color>";
 			case ("0002"):
-				return "The agent looks at you. \n\n\" Do you like traveling ? An merchant from their Guild asked this package to be delivered in the city of Criss. It is located not really far away from here. You only have to take the high road to the east, until you come accross the river. There, cross the bridge and you will arrive to the great city of Triss. The client will pay you 25 gold for your efforts.\"\n\n" +
+				return "The agent looks at you. \n\n\" Do you like traveling ? A merchant from their Guild asked this package to be delivered in the city of Criss. It is located not really far away from here. You only have to take the high road to the east, until you come accross the river. There, cross the bridge and you will arrive to the great city of Criss. The client will pay you 25 gold for your efforts.\"\n\n" +
 					"<color=#cc3300><link=\"questAccepted\">Accept the mission</link></color> \n\n<color=#cc3300><link=\"inn\">Decline the mission</link></color>";
 			case ("0002Accepted"):
-				return "\"The award is given by the client, so you won't have to come back to me once you will have delivered the package. Here is the address where you should go, once you're in Criss. Good luck, be sure that our Guild will hear about your services. \"\n\n" +
+				return "\"The reward is given by the client, so you won't have to come back to me once you will have delivered the package. Here is the address where you should go, once you're in Criss. Good luck, be sure that our Guild will hear about your services. \"\n\n" +
 					"<color=#cc3300><link=\"inn\">You greet the agent and go back to the inn</link></color>";
 			case ("2000"):
 				return "\"Oh, she came in to inform me a new job is up. Apparently, a pickpocket has made his way into our city. Normally, the Guild's guards would be the ones to take care of the problem, but it seems like the merchants' puppies are having trouble dealing with this one. So the Merchants' Guild gave us this bounty. 100 golds if you manage to find the thief and stop him for good.\"\n\n" +
 					"<color=#cc3300><link=\"questAccepted\">Accept the mission</link></color> \n\n<color=#cc3300><link=\"inn\">Decline the mission</link></color>";
 			case ("2000Accepted"):
-				return "\"According to our clients, the thief acts in the market. I think you would have a good chance of catching him if you search for him there. But hey, proceeds as you want. I'm not the one being paid for stopping him.\"\n\n" +
+				return "\"According to our clients, the thief acts in the market. I think you would have a good chance of catching him if you search for him there. But hey, proceeds as you want. I'm not the one being paid for stopping him. \n\n" +
+					"Once you've dealt with him, go to the Merchants' Guild Headquarter. They will give you the reward. It is located between the port and the market, you shouldn't be able to miss it.\"\n\n" +
 					"<color=#cc3300><link=\"inn\">You greet the agent and go back to the inn</link></color>";
 
 			case ("TrivAlreadyAccepted"):
@@ -167,8 +183,8 @@ public class Longport : City {
 			case "confrontThief":
 				return "The pickpocket begins to run. He clearly knows the streets better than you do, but your amazing physical condition allows you to outrun him enough to jump on him. \n\n" +
 					"You both are out of breath. He does not look afraid at all. \"I don't do this for the sole sake of robbing people, you know. I have a sister and a child to feed. I won't let you bring me to the guards. I'd rather kill you here and now\". He gets two daggers out of his boots. It seems like he's not bluffing. \n\n" +
-					"<color=#cc3300><link=\"battleThief\">You're clearly not going to let him do as he wants.</link></color>";
-			case "battleWon":
+					"<color=#cc3300><link=\"thiefBattle\">You're clearly not going to let him do as he wants.</link></color>";
+			case "thiefBattleWon":
 				return "The thief is on the ground, at your mercy. His eyes are getting wet, just like his pants.\n\n" +
 					"\"Please sir... I have a family! You can't kill me! My sister... Her child... They won't be able to survive without me! I will find a real job, I promise, but please, please, don't kill me !\"\n\n" +
 					"<color=#cc3300><link=\"questAccomplished>\"No mercy for the scum\", you say, before dealing the final blow the him</link></color> \n\n<color=#cc3300><link=\"pickpocketted>\"Just get the fuck outta here before I change my mind\"\n\n</link></color>" +

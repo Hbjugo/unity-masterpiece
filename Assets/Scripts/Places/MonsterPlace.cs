@@ -28,7 +28,7 @@ public class MonsterPlace : Place {
 
 	public override string ProcessEvent(string id) {
 		if (id == cityID + "01AlreadyGiven") {
-			FindObjectOfType<GameStatus>().EnterBattle("Battle Scene");
+			FindObjectOfType<GameStatus>().EnterBattle("Icabres Battle");
 			return "";
 		}
 
@@ -58,10 +58,10 @@ public class MonsterPlace : Place {
 			texts.Add("monsterHunt", "You arrived in the forest. Quickly, you find the monsters you were looking for. \n\n " +
 			"<color=#cc3300><link=\"quest" + place.cityID + "01\">Engage them</link></color> \n\n <color=#cc3300><link=\"exit\">Go back</link></color>");
 
-			texts.Add("battleWon", "The beasts are slain. You should collect a few trophies, so you can prove your deeds to the Guild \n\n " +
+			texts.Add("icabresBattleWon", "The beasts are slain. You should collect a few trophies, so you can prove your deeds to the Guild \n\n " +
 				"<color=#cc3300><link=\"questAccomplished\">Collect some trophies</link></color>");
 
-			texts.Add("battleLost", "The monster have won the battle. But the gods have been kind to you, because no one in your party has been hurt. Maybe you could try again to vainquish the monsters. \n\n" +
+			texts.Add("icabresBattleLost", "The monster have won the battle. But the gods have been kind to you, because no one in your party has been hurt. Maybe you could try again to vainquish the monsters. \n\n" +
 				"<color=#cc3300><link=\"quest" + place.cityID + "01\">Try again</link></color> \n\n <color=#cc3300><link=\"exit\">Flee</link></color>");
 
 			texts.Add(place.cityID + "01Accomplished", "You can now go back to the city and collect your rewards. \n\n " +

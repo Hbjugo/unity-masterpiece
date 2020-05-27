@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -58,13 +59,13 @@ public abstract class Mover : MonoBehaviour {
 	 * It puts automatically all the surrounding cells, 
 	 * independantly from the fact that those cells are valid cells for the player to cross or not
 	 **/
-	public static HashSet<Vector3Int> ComputeNeighbours(Vector3Int center, int rad) {
-		HashSet<Vector3Int> neighbours = AuxComputeNeighbours(center, rad, new HashSet<Vector3Int>());
+	public static HashSet<Vector3Int> ComputeNeighbours(Vector3Int center, int rad, TileBase[] invalidTiles) {
+		HashSet<Vector3Int> neighbours = AuxComputeNeighbours(center, rad, invalidTiles, new HashSet<Vector3Int>());
 		neighbours.Remove(center);
 		return neighbours;
 	}
 
-	private static HashSet<Vector3Int> AuxComputeNeighbours(Vector3Int center, int rad, HashSet<Vector3Int> alreadyComputed) {
+	private static HashSet<Vector3Int> AuxComputeNeighbours(Vector3Int center, int rad, TileBase[] invalidTiles, HashSet<Vector3Int> alreadyComputed) {
 		if (rad == 0)
 			return new HashSet<Vector3Int>();
 		int x = center.x;
@@ -87,14 +88,16 @@ public abstract class Mover : MonoBehaviour {
 			neighbours.Add(new Vector3Int(x, y - 1, 0));
 		}
 
-		HashSet<Vector3Int> copyNeighbours1 = new HashSet<Vector3Int>(neighbours);
-		HashSet<Vector3Int> copyNeighbours2 = new HashSet<Vector3Int>(neighbours);
+		HashSet<Vector3Int> validNeighbours = new HashSet<Vector3Int>(neighbours.Where(vector => TileIsValid(vector, invalidTiles)));
+
+		HashSet<Vector3Int> copyNeighbours1 = new HashSet<Vector3Int>(validNeighbours);
+		HashSet<Vector3Int> copyNeighbours2 = new HashSet<Vector3Int>(validNeighbours);
 		copyNeighbours1.ExceptWith(alreadyComputed);
 		foreach (Vector3Int neighbour in copyNeighbours1) {
-			neighbours.UnionWith(AuxComputeNeighbours(neighbour, rad - 1, copyNeighbours2));
+			validNeighbours.UnionWith(AuxComputeNeighbours(neighbour, rad - 1, invalidTiles, copyNeighbours2));
 		}
 
-		return neighbours;
+		return validNeighbours;
 	}
 
 
@@ -103,8 +106,8 @@ public abstract class Mover : MonoBehaviour {
 	 * returns : true iff the cell is a valid one (i.e., is not contained by the invalidCells attribute)
 	 * 
 	 **/
-	protected bool TileIsValid(Vector3Int cell, TileBase[] invalidTiles) {
-		Tilemap map = grid.GetComponentInChildren<Tilemap>();
+	protected static bool TileIsValid(Vector3Int cell, TileBase[] invalidTiles) {
+		Tilemap map = FindObjectOfType<Tilemap>();
 		TileBase tile = map.GetTile(cell);
 		foreach (TileBase c in invalidTiles) {
 			if (tile == c)

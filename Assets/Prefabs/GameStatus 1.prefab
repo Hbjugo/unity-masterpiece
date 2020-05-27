@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 2841974755925962374}
   - component: {fileID: 8099214738018715040}
   - component: {fileID: 1601662750}
+  - component: {fileID: 538915148}
+  - component: {fileID: 538915152}
   m_Layer: 0
   m_Name: GameStatus 1
   m_TagString: Untagged
@@ -56,4 +58,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c9586ee3fd54124db6314533ea57c39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  monsterHunt: {fileID: 0}
+--- !u!114 &538915148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2841974755925962372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c3e4840bfe235b4392f7b967f089819, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &538915152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2841974755925962372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7ed71ecfe799e04c84a109a109c9f8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

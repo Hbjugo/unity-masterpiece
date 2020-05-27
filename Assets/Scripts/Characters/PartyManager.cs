@@ -1,10 +1,11 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PartyManager : MonoBehaviour {
 	const int MAX_CHAR = 5;
 	List<Character> party;
+	List<Character> tempParty;
 	CharacterBank charBank;
 	Character partyLeader;
 
@@ -24,10 +25,15 @@ public class PartyManager : MonoBehaviour {
 		// resetting
 		party = new List<Character>();
 		partyLeader = null;
-		EquipmentBank bank = FindObjectOfType<EquipmentBank>();
-		partyLeader = new Character(save.charNames[0], save.charHealth[0], save.charRadius[0], bank.GetEquipment(save.charEquipments[0]));
-		for (int i = 1; i < save.charNames.Count; ++i)
-			Recruit(new Character(save.charNames[i], save.charHealth[i], save.charRadius[i], bank.GetEquipment(save.charEquipments[i])));
+		EquipmentBank equipBank = FindObjectOfType<EquipmentBank>();
+		CharacterBank charBank = FindObjectOfType<CharacterBank>();
+		partyLeader = charBank.GetCharacter(save.party[0]);
+		partyLeader.Equip(equipBank.GetEquipment(save.charEquipments[0]));
+		for (int i = 1; i < save.party.Count; ++i) {
+			Character chara = charBank.GetCharacter(save.party[i]);
+			chara.Equip(equipBank.GetEquipment(save.charEquipments[i]));
+			Recruit(chara);
+		}
 	}
 
 	public void Recruit(Character chara) {

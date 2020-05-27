@@ -83,7 +83,7 @@ public class QuestLog : MonoBehaviour {
 		bool questAlreadyAccomplished;
 		log.TryGetValue(pendingQuestID, out questAlreadyAccomplished);
 		if (questAlreadyAccomplished)
-			return quest + "Accomplished";
+			return quest + "AlreadyAccomplished";
 
 		return quest + "AlreadyGiven";
 	}
@@ -135,7 +135,7 @@ public class QuestLog : MonoBehaviour {
 		events.GetPlace().TurnInQuest(questID);
 		log.Remove(questID);
 		Debug.Log("removing " + questID);
-		bank.GiveAward(questID);
+		bank.GiveReward(questID);
 
 		return questID + "TurnIn";
 	}

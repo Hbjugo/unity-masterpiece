@@ -16,18 +16,17 @@ public class PartyMap : Mover {
 	HashSet<Vector3Int> currNeighbours;
 	int movementRad = 1;
 
-	Vector3Int currCell = new Vector3Int(-12, 0, 0);
+	Vector3Int currCell = new Vector3Int(-49, -11, 0);
 
 	bool busy = false;
 
 
 	// Start is called before the first frame update
 	protected override void Start() {
-
 		base.Start();
 
 		// compute the first neighbours
-		currNeighbours = ComputeNeighbours(currCell, movementRad);
+		currNeighbours = ComputeNeighbours(currCell, movementRad, invalidTiles);
 
 		map = grid.GetComponentInChildren<Tilemap>();
 	}
@@ -60,6 +59,7 @@ public class PartyMap : Mover {
 	public void Load(Save save) {
 		currCell = new Vector3Int(save.partyCellX, save.partyCellY, 0);
 
+		Debug.Log(grid);
 		transform.position = grid.CellToWorld(currCell);
 
 		// move the player to the currCell, to be sure he is on the right spot at the start
@@ -78,7 +78,7 @@ public class PartyMap : Mover {
 			DecolorNeighbours();
 
 			currCell = nextPos;
-			currNeighbours = ComputeNeighbours(currCell, movementRad);
+			currNeighbours = ComputeNeighbours(currCell, movementRad, invalidTiles);
 
 			ColorNeighbours();
 		}

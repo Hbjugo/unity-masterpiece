@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class QuestBank : MonoBehaviour {
 	public const int NB_TRIV = 2;
-	public const int NB_SIDE = 1;
+	public const int NB_SIDE = 2;
 
 	bool[] sideActivated= new bool[NB_SIDE];
 
@@ -17,29 +17,38 @@ public class QuestBank : MonoBehaviour {
 			case "02":
 				CreateDeliveringQuestToOtherCity(ID.Substring(0, 2));
 				break;
-			default:  break;
+			default:
+				Debug.LogError("Reward missing for quest " + ID);
+				break;
 		}
 		else switch (ID) {
 				case "2000":
 					CreateFindTheThiefQuest();
 					break;
+				case "2001":
+					CreateMadMageCriss();
+					break;
 			}
 
 	}
 
-	public void GiveAward(string ID) {
-		switch (ID.Substring(2)) {
+	public void GiveReward(string ID) {
+		if (ID[0] == '0') switch (ID.Substring(2)) {
 			case "01":
-				AwardMonsterHunt();
+				RewardMonsterHunt();
 				break;
 			case "02":
-				AwardDelivering();
-				break;
-			case "03":
-				AwardThief();
+				RewardDelivering();
 				break;
 			default: break;
 		}
+		else switch (ID) {
+				case "2000":
+					RewardThief();
+					break;
+				default: Debug.LogError("Reward missing for quest " + ID);
+					break;
+			}
 	}
 
 	// 0*00
@@ -75,17 +84,29 @@ public class QuestBank : MonoBehaviour {
 		ActivateQuest("2000", longport, longport);
 	}
 
-	private void AwardMonsterHunt() {
+	// 2001
+	private void CreateMadMageCriss() {
+		Place criss = FindPlace("01");
+		ActivateQuest("2001", criss, criss);
+	}
+
+	private void RewardMonsterHunt() {
 		FindObjectOfType<Wallet>().AddMoney(50);
 	}
 
-	private void AwardDelivering() {
+	private void RewardDelivering() {
 		FindObjectOfType<Wallet>().AddMoney(25);
 
 	}
 
-	private void AwardThief() {
+	private void RewardThief() {
 		FindObjectOfType<Wallet>().AddMoney(100);
+	}
+
+
+	private void RewardMadMageCriss() {
+		FindObjectOfType<Wallet>().AddMoney(200);
+
 	}
 
 	private Place FindPlace(string placeID) {

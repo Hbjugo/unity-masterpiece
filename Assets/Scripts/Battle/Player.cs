@@ -44,7 +44,7 @@ public class Player : Mover {
 			transform.position = grid.CellToWorld(cell);
 			Move(cell, invalidTiles);
 			currCell = cell;
-			currNeighbours = ComputeNeighbours(cell, movementRad);
+			currNeighbours = ComputeNeighbours(cell, movementRad, invalidTiles);
 
 			initialized = true;
 
@@ -149,7 +149,7 @@ public class Player : Mover {
 			DecolorNeighbours();
 
 			currCell = nextPos;
-			currNeighbours = ComputeNeighbours(currCell, movementRad);
+			currNeighbours = ComputeNeighbours(currCell, movementRad, invalidTiles);
 		}
 	}
 

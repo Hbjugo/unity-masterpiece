@@ -8,10 +8,13 @@ public class CharacterBank : MonoBehaviour {
     public Character GetCharacter(string charName) {
 		EquipmentBank bank = FindObjectOfType<EquipmentBank>();
 		switch (charName) {
-			case "Arthur": return new Character(charName, 1, 1, bank.GetEquipment("0000"));
+			case "Arthur": return new Character(charName, 1000, 3, bank.GetEquipment("0000"));
 			case "Smith": return new Character(charName, 1, 1, bank.GetEquipment("0000"));
 			case "Mehdouche": return new Character(charName, 2, 1, bank.GetEquipment("0001"));
 			case "Arnold": return new Character(charName, 1, 2, bank.GetEquipment("0000"));
+			case "Nethonal": return new Character(charName, 1, 1, bank.GetEquipment("0001"));
+			case "Remuald": return new Character(charName, 1, 1, bank.GetEquipment("0000"));
+			case "Rumblat": return new Character(charName, 2, 2, bank.GetEquipment("0000"));
 			default: return new Character(charName, 1, 1, bank.GetEquipment("0000"));
 		}
 	}

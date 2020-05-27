@@ -9,9 +9,12 @@ EditorBuildSettings:
     path: Assets/Scenes/World.unity
     guid: 3333558cf92bd8f49a0a7f5ee50f37a3
   - enabled: 1
-    path: Assets/Scenes/Battle Scene.unity
+    path: Assets/Scenes/Tower Battle.unity
     guid: eea803907e9650e4cabaf8533ce4f19e
   - enabled: 1
-    path: Assets/Scenes/City Battle.unity
-    guid: 7188596c2a1f1c748870f636d7e41b8e
+    path: Assets/Scenes/Thief Battle.unity
+    guid: 7c64f5960eee2f04284a8adbe17dc96b
+  - enabled: 1
+    path: Assets/Scenes/Icabres Battle.unity
+    guid: bbb5a1fc61252d6449349093c6eddf3c
   m_configObjects: {}

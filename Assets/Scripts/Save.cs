@@ -4,6 +4,9 @@ using UnityEngine;
 
 [System.Serializable]
 public class Save {
+	// at what point of the game the party is currently
+	public string currEvent;
+
 	// Party position on the map
 	public int partyCellX;
 	public int partyCellY;
@@ -22,9 +25,7 @@ public class Save {
 	public bool[] sideActivated;
 
 	// Current state of the party
-	public List<string> charNames = new List<string>();
-	public List<int> charHealth = new List<int>();
-	public List<int> charRadius = new List<int>();
+	public List<string> party = new List<string>();
 	public List<string> charEquipments = new List<string>();
 
 	// Current state of the cities

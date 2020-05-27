@@ -30,6 +30,10 @@ public class PartyUI : MonoBehaviour {
 
 	public void Switch() {
 		if (!isActivated) {
+			QuestLogUI log = FindObjectOfType<QuestLogUI>();
+			if (log)
+				log.Desactivate();
+
 			foreach (Transform child in content)
 				Destroy(child.gameObject);
 			
@@ -67,6 +71,7 @@ public class PartyUI : MonoBehaviour {
 					}
 
 			}
+
 			isActivated = true;
 		}
 		else
@@ -74,6 +79,13 @@ public class PartyUI : MonoBehaviour {
 
 		party.SetBusy(isActivated);
 		gameObject.SetActive(isActivated);
+	}
+
+	public void Desactivate() {
+		isActivated = false;
+
+		party.SetBusy(false);
+		gameObject.SetActive(false);
 	}
 
 	public void DisplayArmors(int charIndex) {
